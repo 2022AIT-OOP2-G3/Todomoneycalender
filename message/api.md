@@ -25,7 +25,7 @@
   "startingTime": "10:00", //string 予定の開始時間
   "endingTime": "12:00", //string 予定の終了時間
   "item": "美容院", // string 予定、用事
-  "cost": 5000, //int itemを達成するためにかかる金額
+  "spendingAmoun": 5000, //int itemを達成するためにかかる金額
   "incomeAmount": 1000 //int itemを行った時に増える金額
 }
 ```
@@ -57,21 +57,21 @@ GET http://localhost:5000/uid/2022/10
       "startingTime": "10:00", //string 予定の開始時間
       "endingTime": "12:00", //string 予定の終了時間
       "item": "美容院", // string 予定、用事
-      "cost": 5000 //int itemを達成するためにかかる金額
+      "spendingAmoun": 5000 //int itemを達成するためにかかる金額
     },
     {
       "date": "2022-10-01", //string 年、月、日
       "startingTime": "19:00", //string 予定の開始時間
       "endingTime": "21:00", //string 予定の終了時間
       "item": "飲み会", // string 予定、用事
-      "cost": 8000 //int itemを達成するためにかかる金額
+      "spendingAmoun": 8000 //int itemを達成するためにかかる金額
     },
     {
       "date": "2022-10-25", //string 年、月、日
       "startingTime": "19:00", //string 予定の開始時間
       "endingTime": "21:00", //string 予定の終了時間
       "item": "飲み会", // string 予定、用事
-      "cost": 8000 //int itemを達成するためにかかる金額
+      "spendingAmoun": 8000 //int itemを達成するためにかかる金額
     }
   ]
 }
@@ -92,7 +92,7 @@ GET http://localhost:5000/uid/2022/10/01
     "startingTime": "10:00", //string 予定の開始時間
     "endingTime": "12:00", //string 予定の終了時間
     "item": "美容院", // string 予定、用事
-    "cost": 5000, //int itemを達成するためにかかる金額
+    "spendingAmoun": 5000, //int itemを達成するためにかかる金額
     "incomeAmount": 0 //int itemを行った時に増える金額
   },
   {
@@ -100,7 +100,7 @@ GET http://localhost:5000/uid/2022/10/01
     "startingTime": "19:00", //string 予定の開始時間
     "endingTime": "21:00", //string 予定の終了時間
     "item": "飲み会", // string 予定、用事
-    "cost": 10000, //int itemを達成するためにかかる金額
+    "spendingAmoun": 10000, //int itemを達成するためにかかる金額
     "incomeAmount": 1000 //int itemを行った時に増える金額
   }
 ]
