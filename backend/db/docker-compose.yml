@@ -7,11 +7,7 @@ services:
     container_name: mysql-container
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: database
-      MYSQL_USER: username
-      MYSQL_PASSWORD: password
-      TZ: "Asia/Tokyo"
     volumes:
       - ./my.cnf:/etc/mysql/conf.d/my.cnf
+    env_file:
+      - ../.env.dev

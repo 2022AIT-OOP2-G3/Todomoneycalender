@@ -10,8 +10,15 @@ pymysql = "*"
 pip = "*"
 install = "*"
 mysql-connector-python = "*"
+colorama = "*"
+python-dotenv = "*"
+flake8 = "*"
+pytest = "*"
+isort = "*"
+cerberus = "*"
 
 [dev-packages]
+autopep8 = "*"
 
 [requires]
 python_version = "3.10"

@@ -1,0 +1,18 @@
+POST http://127.0.0.1:5000/schedule/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "uid" : "test",
+    "date" : "2020-10-01",
+    "startingTime" : "10:00",
+    "endingTime" : "12:00",
+    "item": "tsetitem",
+    "spendingAmount" : 10000,
+    "incomeAmount" : 5000
+}
+
+###
+GET http://127.0.0.1:5000/schedule/test/2020/10 HTTP/1.1
+
+###
+GET http://127.0.0.1:5000/schedule/test/2020/10/01 HTTP/1.1
