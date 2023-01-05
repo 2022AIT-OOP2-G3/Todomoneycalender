@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import styled from "styled-components";
 
@@ -12,7 +12,7 @@ const Schedules = [
   { title: "ライブ" },
 ];
 
-export const HeaderWithSidebar = () => {
+export const HeaderWithSidebar = memo(() => {
   const [isOpen, setIsOpen] = useState(true);
 
   const onClickIsOpen = () => setIsOpen(!isOpen);
@@ -28,7 +28,7 @@ export const HeaderWithSidebar = () => {
       {isOpen && <SideBarContent schedules={Schedules} />}
     </>
   );
-};
+});
 
 const SHeader = styled.header`
   height: 40px;
