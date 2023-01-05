@@ -16,7 +16,7 @@ export const SideBarContent = (props) => {
 
 const SUl = styled.ul`
   height: 100vh;
-  width: 200px;
+  width: 260px;
   line-height: 40px;
   float: left;
   text-align: center;
