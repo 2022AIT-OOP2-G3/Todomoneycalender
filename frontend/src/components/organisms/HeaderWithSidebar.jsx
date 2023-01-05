@@ -7,9 +7,9 @@ import { SideBarContent } from "../molecules/sidebar/SideBarContent";
 
 // デモデータ
 const Schedules = [
-  { title: "バイト" },
-  { title: "飲み会" },
-  { title: "ライブ" },
+  { color: "red", title: "バイト" },
+  { color: "blue", title: "飲み会" },
+  { color: "green", title: "ライブ" },
 ];
 
 export const HeaderWithSidebar = memo(() => {

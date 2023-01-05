@@ -6,7 +6,9 @@ export const SideBarContent = (props) => {
   return (
     <SUl>
       {schedules.map((schedule) => (
-        <SLi key={schedule.title}>{schedule.title}</SLi>
+        <SLi key={schedule.title} color={schedule.color}>
+          {schedule.title}
+        </SLi>
       ))}
     </SUl>
   );
@@ -17,7 +19,6 @@ const SUl = styled.ul`
   width: 200px;
   line-height: 40px;
   float: left;
-  list-style: none;
   text-align: center;
   background-color: white;
   border-right: 1px solid #dcdcdc;
@@ -25,4 +26,11 @@ const SUl = styled.ul`
 
 const SLi = styled.li`
   list-style: none;
+  &:before {
+    margin-right: 10px;
+    content: "●";
+    color: ${({ color }) => {
+      return color;
+    }};
+  }
 `;
