@@ -43,3 +43,5 @@ python flask_server.py
 ```
 ### バックエンド
 
+## 全体像
+![](https://i.imgur.com/CGUdKhK.png)
