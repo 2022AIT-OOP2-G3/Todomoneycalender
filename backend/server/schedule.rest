@@ -3,10 +3,11 @@ Content-Type: application/json
 
 {
     "uid" : "test",
-    "date" : "2020-10-01",
+    "startingDate" : "2020-10-01",
+    "endingDate" : "2020-10-01",
     "startingTime" : "10:00",
     "endingTime" : "12:00",
-    "item": "tsetitem",
+    "item": "testitem",
     "spendingAmount" : 10000,
     "incomeAmount" : 5000
 }
