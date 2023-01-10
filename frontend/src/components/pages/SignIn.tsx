@@ -34,7 +34,7 @@ export const SignIn = memo(() => {
         placeholder="password"
         onChange={onChangePassword}
       />
-      <FormButton onClick={onClickSignIn}>サインアップ</FormButton>
+      <FormButton onClick={onClickSignIn}>サインイン</FormButton>
       <PrimaryParagraph>
         新規登録はお済みですか？
         <Link to="signup">Sign Up</Link>
