@@ -1,7 +1,11 @@
-import { memo } from "react";
+import { memo, FC, ReactNode } from "react";
 import { HeaderWithSidebar } from "../organisms/HeaderWithSidebar";
 
-export const HeaderLayout = memo((props) => {
+interface Props {
+  children: ReactNode;
+}
+
+export const HeaderLayout: FC<Props> = memo((props) => {
   const { children } = props;
   return (
     <>

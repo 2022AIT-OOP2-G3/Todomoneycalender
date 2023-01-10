@@ -1,6 +1,13 @@
+import { FC } from "react";
 import styled from "styled-components";
 
-export const SideBarContent = (props) => {
+import { TitleWithColor } from "../../../../types/titleWithColor";
+
+interface Props {
+  schedules: Array<TitleWithColor>;
+}
+
+export const SideBarContent: FC<Props> = (props) => {
   const { schedules } = props;
 
   return (
@@ -16,7 +23,7 @@ export const SideBarContent = (props) => {
 
 const SUl = styled.ul`
   height: 100vh;
-  width: 260px;
+  width: 200px;
   line-height: 40px;
   float: left;
   text-align: center;

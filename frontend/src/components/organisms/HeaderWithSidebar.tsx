@@ -1,8 +1,8 @@
-import { memo, useState } from "react";
+import { memo, useState, FC } from "react";
 import { FiMenu } from "react-icons/fi";
 import styled from "styled-components";
 
-import { PrimaryButton } from "../atom/button/PrimaryButton";
+import { MenuButton } from "../atom/button/MenuButton";
 import { SideBarContent } from "../molecules/sidebar/SideBarContent";
 
 // デモデータ
@@ -12,7 +12,7 @@ const Schedules = [
   { color: "green", title: "ライブ" },
 ];
 
-export const HeaderWithSidebar = memo(() => {
+export const HeaderWithSidebar: FC = memo(() => {
   const [isOpen, setIsOpen] = useState(true);
 
   const onClickIsOpen = () => setIsOpen(!isOpen);
@@ -20,9 +20,9 @@ export const HeaderWithSidebar = memo(() => {
   return (
     <>
       <SHeader>
-        <PrimaryButton onClick={onClickIsOpen}>
+        <MenuButton onClick={onClickIsOpen}>
           <FiMenu color="black" size={20} />
-        </PrimaryButton>
+        </MenuButton>
         <SA>カレンダー</SA>
       </SHeader>
       {isOpen && <SideBarContent schedules={Schedules} />}
