@@ -20,16 +20,18 @@ class Schedule(Base):
     updated_at = Column(DateTime, unique=False)
 
     uid = Column(String(255), unique=False, nullable=False)
-    date = Column(DateTime, unique=False)
+    starting_date = Column(DateTime, unique=False)
+    ending_date = Column(DateTime, unique=False)
     starting_time = Column(DateTime, unique=False)
     ending_time = Column(DateTime, unique=False)
     item = Column(String(255), unique=False)
     spending_amount = Column(Integer, unique=False, default=0)
     income_amount = Column(Integer, unique=False, default=0)
 
-    def __init__(self, uid: str, date: datetime, starting_time: datetime, ending_time: datetime, item: str, spending_amount: int, income_amount: int):
+    def __init__(self, uid: str, starting_date: datetime, ending_date: datetime, starting_time: datetime, ending_time: datetime, item: str, spending_amount: int, income_amount: int):
         self.uid = uid
-        self.date = date
+        self.starting_date = starting_date
+        self.ending_date = ending_date
         self.starting_time = starting_time
         self.ending_time = ending_time
         self.item = item
@@ -39,11 +41,24 @@ class Schedule(Base):
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
+    @classmethod
+    def get_date_param_name(cls):
+        for name in cls.__dict__:
+            if name.endswith('_date'):
+                yield name
+
+    @classmethod
+    def get_time_param_name(cls):
+        for name in cls.__dict__:
+            if name.endswith('_time'):
+                yield name
+
 
 def validate(params) -> Tuple[bool, dict]:
     schema = {
         'uid': {'type': 'string', 'required': True, 'maxlength': 255},
-        'date': {'type': 'datetime', 'required': True},
+        'startingDate': {'type': 'datetime', 'required': True},
+        'endingDate': {'type': 'datetime', 'required': True},
         'startingTime': {'type': 'datetime', 'required': True},
         'endingTime': {'type': 'datetime', 'required': True},
         'item': {'type': 'string', 'required': True, 'maxlength': 255},
