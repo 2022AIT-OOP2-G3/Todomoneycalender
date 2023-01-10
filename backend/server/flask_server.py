@@ -1,4 +1,3 @@
-
 import flask
 
 import api.schedule_api as schedule_api
@@ -8,14 +7,9 @@ create_all_tables()
 
 
 app = flask.Flask(__name__)
-
-
-@app.route('/')
-def index():
-    return 'Hello World!'
-
+app.config['JSON_SORT_KEYS'] = False
 
 app.register_blueprint(schedule_api.schedule_module)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
