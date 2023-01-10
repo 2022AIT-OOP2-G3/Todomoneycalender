@@ -16,8 +16,4 @@ export const userRoutes = [
     path: "day",
     children: <DayCalender />,
   },
-  {
-    path: "*",
-    children: <Page404 />,
-  },
 ];

@@ -21,6 +21,7 @@ export const Router: FC = () => {
             element={<HeaderLayout>{route.children}</HeaderLayout>}
           />
         ))}
+        <Route path="*" element={<Page404 />} />
       </Route>
       <Route path="*" element={<Page404 />} />
     </Routes>
