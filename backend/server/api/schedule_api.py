@@ -8,6 +8,8 @@ import model.schedule_model as schedule_model
 from utility.is_date_convertible import (is_date_convertible,
                                          is_time_convertible)
 
+from utility.convert_json_key import convert_to_camel
+
 schedule_module = Blueprint('schedule', __name__, url_prefix='/schedule')
 
 
@@ -24,31 +26,45 @@ def post_schedule():
     json: dict = cast(dict, request.get_json())
 
     error_message: str = ""
-    if not is_date_convertible(json['date']):
-        error_message += "date is not date\n"
-    if not is_time_convertible(json['startingTime']):
-        error_message += "starting_time is not time\n"
-    if not is_time_convertible(json['endingTime']):
-        error_message += "ending_time is not time\n"
+
+    for param in schedule_model.Schedule.get_date_param_name():
+        json_key = convert_to_camel(param)
+        if json_key not in json:
+            error_message += f"{param} is not found\n"
+            continue
+        if not is_date_convertible(json[json_key]):
+            error_message += f"{param} is not date\n"
+            continue
+        json[json_key] = t.datetime.strptime(json[json_key], '%Y-%m-%d')
+
+    for param in schedule_model.Schedule.get_time_param_name():
+        json_key = convert_to_camel(param)
+        if json_key not in json:
+            error_message += f"{param} is not found\n"
+            continue
+        if not is_time_convertible(json[json_key]):
+            error_message += f"{param} is not time\n"
+            continue
+        json[json_key] = t.datetime.strptime(json[json_key], '%H:%M')
+
     if error_message != "":
         return jsonify({'status': 'NG', 'message': error_message})
 
-    json['date'] = t.datetime.strptime(json['date'], '%Y-%m-%d')
-    json['startingTime'] = t.datetime.strptime(json['startingTime'], '%H:%M')
-    json['endingTime'] = t.datetime.strptime(json['endingTime'], '%H:%M')
     check, errors = schedule_model.validate(json)
     if not check:
         return jsonify({'status': 'NG', 'message': errors})
 
     uid = json['uid']
-    date = json['date']
+    starting_date = json['startingDate']
+    ending_date = json['endingDate']
     starting_time = json['startingTime']
     ending_time = json['endingTime']
     item = json['item']
     spending_amount = json['spendingAmount']
     income_amount = json['incomeAmount']
-    schedule_db.add_schedule(uid, date, starting_time,
-                             ending_time, item, spending_amount, income_amount)
+    schedule = schedule_model.Schedule(
+        uid, starting_date, ending_date, starting_time, ending_time, item, spending_amount, income_amount)
+    schedule_db.add_schedule(schedule)
     return jsonify({'status': 'OK'})
 
 
@@ -80,13 +96,15 @@ def get_monthly_schedules(uid: str, year: int, month: int):
     )
 
     result = {
-        'date': datatime.strftime('%Y-%m'),
+        'date': t.datetime.strftime(datatime, '%Y-%m'),
         'spendingAmount': total_spending_amount,
         'usingAmount': total_using_amount,
         'incomeAmount': total_income_amount,
         'schedule': list(map(lambda schedule:
                          {
-                             'date': schedule.date.strftime('%Y-%m-%d'),
+                             'id': schedule.id,
+                             'startingDate': schedule.starting_date.strftime('%Y-%m-%d'),
+                             'endingDate': schedule.ending_date.strftime('%Y-%m-%d'),
                              'startingTime': schedule.starting_time.strftime('%H:%M'),
                              'endingTime': schedule.ending_time.strftime('%H:%M'),
                              'item': schedule.item,
@@ -119,8 +137,9 @@ def get_daily_schedules(uid: str, year: int, month: int, day: int):
     schedules = schedule_db.get_daily_schedules(uid, datatime)
     result = list(map(lambda schedule:
                       {
-                          "startingDate": schedule.date.strftime('%Y-%m-%d'),
-                          "endingDate": schedule.date.strftime('%Y-%m-%d'),
+                          "id": schedule.id,
+                          "startingDate": schedule.starting_date.strftime('%Y-%m-%d'),
+                          "endingDate": schedule.ending_date.strftime('%Y-%m-%d'),
                           "startingTime": schedule.starting_time.strftime('%H:%M'),
                           "endingTime": schedule.ending_time.strftime('%H:%M'),
                           "item": schedule.item,
