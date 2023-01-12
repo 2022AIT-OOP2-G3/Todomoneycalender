@@ -63,3 +63,15 @@ def add_schedule(uid: str, date: t.datetime, starting_time: t.datetime, ending_t
                 item, spending_amount, income_amount))
     session.commit()
     session.close()
+def delete_schedule(id:int):
+    """スケジュールを削除する
+
+    Args:
+        id(int):スケジュールID
+    """
+    session = get_db_session()
+    session.query(Schedule).filter(Schedule.id == id).delete()
+    session.commit()
+    session.close()
+    
+
