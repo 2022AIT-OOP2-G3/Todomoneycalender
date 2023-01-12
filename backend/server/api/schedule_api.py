@@ -76,9 +76,6 @@ def get_monthly_schedules(uid: str, year: int, month: int):
         uid (str): ユーザーID
         year (int): 年
         month (int): 月
-
-    Returns:
-        List[Schedule]: スケジュールのリスト
     """
     if not is_date_convertible(f'{year}-{month}-01'):
         return jsonify({'status': 'NG', 'message': 'date is not date'})
@@ -126,9 +123,6 @@ def get_daily_schedules(uid: str, year: int, month: int, day: int):
         year (int): 年
         month (int): 月
         day (int): 日
-
-    Returns:
-        List[Schedule]: スケジュールのリスト
     """
 
     if not is_date_convertible(f'{year}-{month}-{day}'):

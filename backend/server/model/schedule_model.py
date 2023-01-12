@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple
+from typing import Dict, Tuple
 
 from cerberus import Validator
 from sqlalchemy import Column, DateTime, Integer, String, func
@@ -43,18 +43,34 @@ class Schedule(Base):
 
     @classmethod
     def get_date_param_name(cls):
+        """日付のデータのカラム名の一覧を取得する
+
+        Returns:
+            yeild name: 日付のデータのカラム名
+        """
         for name in cls.__dict__:
             if name.endswith('_date'):
                 yield name
 
     @classmethod
     def get_time_param_name(cls):
+        """時間のデータのカラム名の一覧を取得する
+
+        Returns:
+            yeild name: 時間のデータのカラム名
+        """
         for name in cls.__dict__:
             if name.endswith('_time'):
                 yield name
 
 
-def validate(params) -> Tuple[bool, dict]:
+def validate(params: Dict) -> Tuple[bool, dict]:
+    """送られてきたデータのチェックを行う
+
+    Returns:
+        bool: データが正常であるか
+        str: 失敗した場合、エラーメッセージを返す
+    """
     schema = {
         'uid': {'type': 'string', 'required': True, 'maxlength': 255},
         'startingDate': {'type': 'datetime', 'required': True},
