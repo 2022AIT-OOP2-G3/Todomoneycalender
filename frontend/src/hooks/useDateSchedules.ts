@@ -9,7 +9,7 @@ interface Props {
   date: string;
 }
 
-export const useAllUsers = () => {
+export const useDateSchedules = () => {
   const [dateShedules, setDateSchedules] = useState<DateSchedule>();
 
   const getDateSchedules = useCallback((props: Props) => {

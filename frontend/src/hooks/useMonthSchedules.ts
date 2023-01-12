@@ -8,7 +8,7 @@ interface Props {
   month: string;
 }
 
-export const useAllUsers = () => {
+export const useMonthSchedules = () => {
   const [monthShedules, setMonthSchedules] = useState<MonthSchedule>();
 
   const getMonthSchedules = useCallback((props: Props) => {

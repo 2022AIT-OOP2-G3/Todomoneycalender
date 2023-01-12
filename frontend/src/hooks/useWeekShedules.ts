@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useCallback } from "react";
 
-export const useAllUsers = () => {
+export const useWeekShedules = () => {
   const [weekShedules, setWeekSchedules] = useState([]);
 
   const getWeekSchedules = useCallback(() => {
