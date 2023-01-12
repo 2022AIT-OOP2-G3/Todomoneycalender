@@ -23,7 +23,7 @@ docker-compose up -d
 ```
 2. フロントエンドとMySQLサーバを繋ぐFlaskサーバを立ち上げる
 ```bash
-cd backend
+cd backend/server
 
 pipenv install
 
