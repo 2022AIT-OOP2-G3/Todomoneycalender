@@ -17,3 +17,5 @@ GET http://127.0.0.1:5000/schedule/test/2020/10 HTTP/1.1
 
 ###
 GET http://127.0.0.1:5000/schedule/test/2020/10/01 HTTP/1.1
+###
+DELETE  http://127.0.0.1:5000/schedule/1 HTTP/1.1

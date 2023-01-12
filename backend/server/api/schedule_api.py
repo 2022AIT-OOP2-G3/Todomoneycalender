@@ -149,3 +149,15 @@ def get_daily_schedules(uid: str, year: int, month: int, day: int):
                       schedules
                       ))
     return jsonify(result)
+
+@ schedule_module.route('/<int:id>', methods=['DELETE'])
+def delete_schedule(id: int):
+    """指定した日のスケジュールを削除する
+
+    Args:
+        id (int): スケジュールID
+
+    """
+    schedule_db.delete_schedule(id)
+    return jsonify({'status': 'OK'})
+
