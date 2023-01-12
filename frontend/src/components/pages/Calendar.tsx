@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 
-export const Calender = memo(() => {
+export const Calendar = memo(() => {
   return (
     <FullCalendar
         plugins={[ dayGridPlugin, timeGridPlugin,interactionPlugin ]}
