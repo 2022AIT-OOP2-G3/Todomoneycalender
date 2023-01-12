@@ -6,7 +6,7 @@ import { SignIn } from "../components/pages/SignIn";
 import { SignUp } from "../components/pages/SignUp";
 import { Page404 } from "../components/pages/Page404";
 import { HeaderLayout } from "../components/templates/HeaderLayout";
-import { MonthyCalender } from "../components/pages/MonthlyCalender";
+import { MonthyCalender } from "../components/pages/Calender";
 
 export const Router: FC = () => {
   return (

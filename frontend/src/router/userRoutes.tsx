@@ -1,5 +1,5 @@
 import { Page404 } from "../components/pages/Page404";
-import { MonthyCalender } from "../components/pages/MonthlyCalender";
+import { MonthyCalender } from "../components/pages/Calender";
 import { WeeklyCalender } from "../components/pages/WeeklyCalender";
 import { DayCalender } from "../components/pages/DayCalender";
 
