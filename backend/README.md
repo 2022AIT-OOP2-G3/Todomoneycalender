@@ -15,7 +15,7 @@ docker-compose up -d
 ## start flask api server
 
 ```bash
-cd backend
+cd backend/server
 
 pipenv install
 
