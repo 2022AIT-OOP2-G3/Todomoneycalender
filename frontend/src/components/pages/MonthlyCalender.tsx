@@ -1,5 +1,12 @@
 import { memo } from "react";
+import FullCalendar from '@fullcalendar/react' // must go before plugins
+import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 
 export const MonthyCalender = memo(() => {
-  return <p>月カレンダーページです</p>;
+  return (
+    <FullCalendar
+        plugins={[ dayGridPlugin ]}
+        initialView="dayGridMonth"
+      />
+   );
 });
