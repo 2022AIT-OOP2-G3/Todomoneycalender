@@ -1,9 +1,7 @@
 export interface DateSchedule {
-  startingDate: string;
-  endingDate: string;
-  startingTime: string;
+  date: string;
   endingTime: string;
   item: string;
-  spendingAmoun: number;
-  incomeAmount: number;
+  spendingAmount: number;
+  startingTime: string;
 }
