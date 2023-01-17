@@ -16,6 +16,7 @@ flake8 = "*"
 pytest = "*"
 isort = "*"
 cerberus = "*"
+flask-cors = "*"
 
 [dev-packages]
 autopep8 = "*"
