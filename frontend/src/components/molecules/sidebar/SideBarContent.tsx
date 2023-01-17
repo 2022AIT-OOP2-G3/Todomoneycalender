@@ -1,22 +1,18 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import { TitleWithColor } from "../../../../types/titleWithColor";
+import { FiPlus } from "react-icons/fi";
 
-interface Props {
-  schedules: Array<TitleWithColor>;
-}
-
-export const SideBarContent: FC<Props> = (props) => {
-  const { schedules } = props;
-
+export const SideBarContent: FC = () => {
   return (
     <SUl>
-      {schedules.map((schedule) => (
-        <SLi key={schedule.title} color={schedule.color}>
-          {schedule.title}
-        </SLi>
-      ))}
+      <p>今月の予算：円</p>
+      <p>今月の収支：円</p>
+      <p>今月の支出：円</p>
+      <p>今月の収入：円</p>
+      <SLi>
+        <FiPlus /> 今月の予算を入力
+      </SLi>
     </SUl>
   );
 };
@@ -33,11 +29,12 @@ const SUl = styled.ul`
 
 const SLi = styled.li`
   list-style: none;
-  &:before {
+  color: gray;
+  /* &:before {
     margin-right: 10px;
     content: "●";
     color: ${({ color }) => {
-      return color;
-    }};
-  }
+    return color;
+  }};
+  } */
 `;
