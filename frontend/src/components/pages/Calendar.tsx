@@ -4,6 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 
+
 export  class Calendar extends React.Component {
 
   render(){
@@ -23,23 +24,40 @@ export  class Calendar extends React.Component {
     );
   }
   handleDateClick=(arg: any) => {
-    let title = prompt('Please enter a new title for your event')
+    let title = prompt('イベントを入力してください')
+    let income;
+    let spending;
     let calendarApi = arg.view.calendar
 
-    calendarApi.unselect() // clear date selection
+    // calendarApi.unselect() // clear date selection
 
     if (title) {
+      income = prompt('収入を入力してください')
+      if(income){
+        title=title+"  \n収入:"+income+"円"
+      }
+      spending = prompt('支出を入力してください')
+      if(spending){
+        title=title+"  \n支出:"+spending+"円"
+      }
       calendarApi.addEvent({
         title: title,
+        income: income,
+        spending: spending,
         start: arg.startStr,
         end: arg.endStr,
         allDay: arg.allDay
       })
     }
+    // return(
+    //   <div className="popup-box">
+    //     <label>
+    //       Name:
+    //     </label>
+    //   </div>
+    // )
   }
   eventClick=(eventInfo: any) =>{
-    if (confirm(`Are you sure you want to delete the event '${eventInfo.event.title}'`)) {
-      
-    }
+    eventInfo.event.remove()
   }
 }
