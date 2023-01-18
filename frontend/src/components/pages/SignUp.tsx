@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { memo, useState, ChangeEvent, useCallback} from "react";
+import { memo, useState, ChangeEvent, useCallback, } from "react";
 
 import { FormLayout } from "../templates/FormLayout";
 import { FormButton } from "../atom/button/FormButton";
@@ -23,27 +23,27 @@ export const SignUp = memo(() => {
     setConfirmationPassword(e.target.value);
 
   const onClickSubmitForm = useCallback(() => {
-    signUp({
-      email: email,
-      password: password,
-      confirmationPassword: confirmationPassword,
-    });
-  }, [signUp]);
+    signUp({email: email, password: password, confirmationPassword: confirmationPassword,});
+    // setEmail(""); setPassword(""); setConfirmationPassword("");
+  }, [signUp, email, password, confirmationPassword]);
 
   return (
     <FormLayout>
       <PrimaryInput
         type="text"
+        value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
       <PrimaryInput
         type="password"
+        value={password}
         placeholder="password"
         onChange={onChangePassword}
       />
       <PrimaryInput
         type="password"
+        value={confirmationPassword}
         placeholder="confirmation password"
         onChange={onChangeConfirmationPassword}
       />
