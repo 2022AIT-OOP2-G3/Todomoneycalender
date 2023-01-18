@@ -15,15 +15,21 @@ npm start
 ```
 
 ### バックエンド
+
+#### 実行環境
+
+- docker: Docker Desktop 4.15.0 (93002)
+- pipenv: version 2022.12.19
+  - [Python のバージョンと使用しているパッケージのバージョン](https://github.com/2022AIT-OOP2-G3/Todomoneycalender/blob/main/backend/server/Pipfile)
 1. Docker内のMySQLサーバを立ち上げる
 ```bash
-cd db
+cd backend/db
 
 docker-compose up -d
 ```
 2. フロントエンドとMySQLサーバを繋ぐFlaskサーバを立ち上げる
 ```bash
-cd backend
+cd backend/server
 
 pipenv install
 
