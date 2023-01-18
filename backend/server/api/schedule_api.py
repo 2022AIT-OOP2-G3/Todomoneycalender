@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request
 import db.schedule_db as schedule_db
 import model.schedule_model as schedule_model
 from utility.is_date_convertible import (is_date_convertible,
-                                         is_time_convertible)
+                                     is_time_convertible)
 
 from utility.convert_json_key import convert_to_camel
 
