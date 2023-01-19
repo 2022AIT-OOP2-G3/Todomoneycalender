@@ -6,7 +6,6 @@ import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
 
 
 export  class Calendar extends React.Component {
-
   render(){
     return (
       <FullCalendar
@@ -16,48 +15,71 @@ export  class Calendar extends React.Component {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
           }}
-          events={[{title: '正月',date: '2023-01-01'}]}
+          weekends={true}
           selectable={true}
-          select={this.handleDateClick}
-          eventClick={this.eventClick}
+          select={this.handleDateClick}//日付をクリックした時
+          eventClick={this.eventClick}//イベントをクリックした時
       />
     );
   }
-  handleDateClick=(arg: any) => {
+  handleDateClick=(arg: any) => {//日付をクリックした時
     let title = prompt('イベントを入力してください')
-    let income;
-    let spending;
+    let income = prompt('収入を入力してください')
+    let spending = prompt('支出を入力してください')
     let calendarApi = arg.view.calendar
 
     // calendarApi.unselect() // clear date selection
-
     if (title) {
-      income = prompt('収入を入力してください')
-      if(income){
-        title=title+"  \n収入:"+income+"円"
-      }
-      spending = prompt('支出を入力してください')
-      if(spending){
-        title=title+"  \n支出:"+spending+"円"
-      }
-      calendarApi.addEvent({
+      calendarApi.addEvent({//イベント追加
         title: title,
-        income: income,
-        spending: spending,
+        income:income,
         start: arg.startStr,
         end: arg.endStr,
-        allDay: arg.allDay
+        allDay: arg.allDay,
+        color:'white',
+        textColor: 'black'
       })
     }
-    // return(
-    //   <div className="popup-box">
-    //     <label>
-    //       Name:
-    //     </label>
-    //   </div>
-    // )
+    if(income){
+      calendarApi.addEvent({//収入イベント追加
+        title: "+"+income,
+        start: arg.startStr,
+        end: arg.endStr,
+        allday: arg.allday,
+        color:'white',
+        textColor:'blue'
+      })
+    }
+    if(spending){
+      calendarApi.addEvent({//支出イベント追加
+        title: "-"+spending,
+        start: arg.startStr,
+        end: arg.endStr,
+        allday: arg.allday,
+        color:'white',
+        textColor:'red'
+      })
+    }
   }
   eventClick=(eventInfo: any) =>{
-    eventInfo.event.remove()
+    if(eventInfo.event.title.charAt(0)=='-'){
+      const is_ok=window.confirm(`選択した"収入"を削除しますか？ '${eventInfo.event.title}'`);
+      console.log("支出")
+      if(is_ok){
+        eventInfo.event.remove()
+      }
+    }else if(eventInfo.event.title.charAt(0)=='+'){
+      const is_ok=window.confirm(`選択した"支出"を削除しますか？ '${eventInfo.event.title}'`);
+      console.log("収入")
+      if(is_ok){
+        eventInfo.event.remove()
+      }
+    }
+    else{
+      const is_ok=window.confirm(`選択した"イベント"を削除しますか？ '${eventInfo.event.title}'`);
+      if(is_ok){
+        eventInfo.event.remove()
+      }
+    }
   }
 }
