@@ -20,21 +20,25 @@ export const SignIn = memo(() => {
 
   const onClickSignIn = useCallback(() => {
     signIn({ email: email, password: password });
-  }, [signIn]);
+  }, [signIn, email, password ]);
+
+  
 
   return (
     <FormLayout>
       <PrimaryInput
         type="text"
+        value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
       <PrimaryInput
         type="password"
+        value={password}
         placeholder="password"
         onChange={onChangePassword}
       />
-      <FormButton onClick={onClickSignIn}>サインアップ</FormButton>
+      <FormButton onClick={onClickSignIn}>サインイン</FormButton>
       <PrimaryParagraph>
         新規登録はお済みですか？
         <Link to="signup">Sign Up</Link>
