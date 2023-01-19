@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { memo, useState, ChangeEvent, useCallback } from "react";
+import { memo, useState, ChangeEvent, useCallback, } from "react";
 
 import { FormLayout } from "../templates/FormLayout";
 import { FormButton } from "../atoms/button/FormButton";
@@ -34,11 +34,13 @@ export const SignUp = memo(() => {
       <FormInput
         type="text"
         value={email}
+        value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
       <FormInput
         type="password"
+        value={password}
         value={password}
         placeholder="password"
         onChange={onChangePassword}

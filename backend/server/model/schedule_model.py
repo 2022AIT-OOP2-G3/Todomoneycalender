@@ -72,6 +72,7 @@ def validate(params: Dict) -> Tuple[bool, dict]:
         str: 失敗した場合、エラーメッセージを返す
     """
     schema = {
+        'id' : {'type': 'integer', 'required': False},
         'uid': {'type': 'string', 'required': True, 'maxlength': 255},
         'startingDate': {'type': 'datetime', 'required': True},
         'endingDate': {'type': 'datetime', 'required': True},
