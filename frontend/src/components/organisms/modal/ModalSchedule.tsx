@@ -1,36 +1,37 @@
 import styled from "styled-components";
-import { FC, useState, ChangeEvent, useCallback } from "react";
+import { FC, useState, ChangeEvent, useCallback, useEffect } from "react";
 import { FiXCircle } from "react-icons/fi";
 
+import { useRecoilState } from "recoil";
+import { ModalLayout } from "../../templates/ModalLayOut";
 import { ModalInput } from "../../atoms/input/ModalInput";
 import { FormButton } from "../../atoms/button/FormButton";
 import { CloseButton } from "../../atoms/button/CloseButton";
-import { ModalLayout } from "../../templates/ModalLayOut";
 import { useScheduleData } from "../../../hooks/post/useScheduleData";
+import { modalScheduleState } from "../../../store/modalScheduleState";
 
 type Props = {
-  uid: string;
-  startingDay: string;
-  endingDay: string;
-  isOpen: boolean;
-  setIsOpen: (value: boolean) => void;
+  start: string;
+  end: string;
 };
 
 export const ModalSchedule: FC<Props> = (props) => {
-  const { uid, startingDay, endingDay, isOpen, setIsOpen } = props;
+  const { start, end } = props;
 
   const { postScheduleData } = useScheduleData();
 
-  const [startingTime, setStartingTime] = useState("");
-  const [endingTime, setEndingTime] = useState("");
+  const [modalSchedule, setModalSchedule] = useRecoilState(modalScheduleState);
+
+  const [startingDateTime, setStartingDateTime] = useState("");
+  const [endingDateTime, setEndingDateTime] = useState("");
   const [item, setItem] = useState("");
   const [spendingAmount, setSpendingAmount] = useState("");
   const [incomeAmount, setIncomeAmount] = useState("");
 
   const onChangeStartingTime = (e: ChangeEvent<HTMLInputElement>) =>
-    setStartingTime(e.target.value);
+    setStartingDateTime(e.target.value);
   const onChangeEndingTime = (e: ChangeEvent<HTMLInputElement>) =>
-    setEndingTime(e.target.value);
+    setEndingDateTime(e.target.value);
   const onChangeItem = (e: ChangeEvent<HTMLInputElement>) =>
     setItem(e.target.value);
   const onChangeSpendingAmount = (e: ChangeEvent<HTMLInputElement>) =>
@@ -38,31 +39,33 @@ export const ModalSchedule: FC<Props> = (props) => {
   const onChangeIncomeAmount = (e: ChangeEvent<HTMLInputElement>) =>
     setIncomeAmount(e.target.value);
 
+  useEffect(() => {
+    setStartingDateTime(start);
+    setStartingDateTime(end);
+  }, [start, end]);
+  // console.log(startingDay.replace(":00+09:00", ""));
+
+  console.log(start + startingDateTime);
+  // console.log(startingDateTime);
+
   const onClickCloseModal = useCallback(() => {
-    setIsOpen(!isOpen);
-  }, [setIsOpen, isOpen]);
+    setModalSchedule({ isOpen: !modalSchedule.isOpen });
+  }, [setModalSchedule, modalSchedule]);
 
   const onClickPostData = useCallback(() => {
     postScheduleData({
-      uid: uid,
-      startingDay: startingDay,
-      endingDay: endingDay,
-      startingTime: startingTime,
-      endingTime: endingTime,
+      startingDateTime: startingDateTime,
+      endingDateTime: endingDateTime,
       item: item,
       spendingAmount: Number(spendingAmount),
       incomeAmount: Number(incomeAmount),
     });
-    setIsOpen(!isOpen);
+    setModalSchedule({ isOpen: false });
   }, [
     postScheduleData,
-    setIsOpen,
-    isOpen,
-    uid,
-    startingDay,
-    endingDay,
-    endingTime,
-    startingTime,
+    setModalSchedule,
+    startingDateTime,
+    endingDateTime,
     item,
     spendingAmount,
     incomeAmount,
@@ -70,21 +73,26 @@ export const ModalSchedule: FC<Props> = (props) => {
 
   return (
     <>
-      {isOpen ? (
+      {modalSchedule.isOpen ? (
         <ModalLayout>
-          {" "}
           <CloseButton onClick={onClickCloseModal}>
             <FiXCircle color="gray" size={20} />
           </CloseButton>
-          <SH1>{startingDay}の予定</SH1>
+          <SH1>予定登録</SH1>
           <FormGroup>
             <label>予定</label>
-            <ModalInput type="text" placeholder="" onChange={onChangeItem} />
+            <ModalInput
+              type="text"
+              value={item}
+              placeholder=""
+              onChange={onChangeItem}
+            />
           </FormGroup>
           <FormTimeGroup>
             <label>開始時刻</label>
             <ModalInput
-              type="time"
+              type="datetime-local"
+              value={startingDateTime}
               placeholder=""
               onChange={onChangeStartingTime}
             />
@@ -92,7 +100,8 @@ export const ModalSchedule: FC<Props> = (props) => {
           <FormTimeGroup>
             <label>終了時刻</label>
             <ModalInput
-              type="time"
+              type="datetime-local"
+              value={endingDateTime}
               placeholder=""
               onChange={onChangeEndingTime}
             />
@@ -101,6 +110,7 @@ export const ModalSchedule: FC<Props> = (props) => {
             <label>予定による支出</label>
             <ModalInput
               type="number"
+              value={spendingAmount}
               placeholder=""
               onChange={onChangeSpendingAmount}
             />
@@ -109,6 +119,7 @@ export const ModalSchedule: FC<Props> = (props) => {
             <label>予定による収入</label>
             <ModalInput
               type="number"
+              value={incomeAmount}
               placeholder=""
               onChange={onChangeIncomeAmount}
             />
@@ -116,8 +127,8 @@ export const ModalSchedule: FC<Props> = (props) => {
           <FormButton
             onClick={onClickPostData}
             disabled={
-              startingDay === "" ||
-              endingDay === "" ||
+              startingDateTime === "" ||
+              endingDateTime === "" ||
               item === "" ||
               spendingAmount === "" ||
               incomeAmount === ""
@@ -126,9 +137,7 @@ export const ModalSchedule: FC<Props> = (props) => {
             予定を追加
           </FormButton>
         </ModalLayout>
-      ) : (
-        <h1></h1>
-      )}
+      ) : null}
     </>
   );
 };
