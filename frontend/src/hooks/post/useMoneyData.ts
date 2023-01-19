@@ -1,14 +1,20 @@
 import axios from "axios";
 import { useCallback } from "react";
+import { auth } from "../auth/firebase/firebase";
 
 interface Props {
-  uid: string;
   spendingAmount: number;
 }
 
 export const useMoneyData = () => {
   const postMoneyData = useCallback((props: Props) => {
-    const { uid, spendingAmount } = props;
+    const { spendingAmount } = props;
+    const uid = auth.currentUser?.uid;
+
+    if (uid === null) {
+      alert("登録に失敗しました");
+      return;
+    }
 
     axios
       .post("/user", {
