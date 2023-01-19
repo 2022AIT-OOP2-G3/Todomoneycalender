@@ -20,22 +20,18 @@ export const SignIn = memo(() => {
 
   const onClickSignIn = useCallback(() => {
     signIn({ email: email, password: password });
-  }, [signIn, email, password ]);
-
-  
+  }, [signIn, email, password]);
 
   return (
     <FormLayout>
       <FormInput
         type="text"
         value={email}
-        value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
       <FormInput
         type="password"
-        value={password}
         value={password}
         placeholder="password"
         onChange={onChangePassword}

@@ -31,6 +31,7 @@ export const Calendar = memo(() => {
 
   return (
     <>
+
       <ModalSchedule
         start={startingDateTime}
         end={endingDateTime}
