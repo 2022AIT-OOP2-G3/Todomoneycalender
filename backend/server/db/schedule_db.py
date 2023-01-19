@@ -51,13 +51,7 @@ def add_schedule(schedule: Schedule):
     """スケジュールを追加する
 
     Args:
-        uid (str): ユーザーID
-        date (t.datetime): 日付
-        starting_time (t.datetime): 開始時間
-        ending_time (t.datetime): 終了時間
-        item (str): アイテム
-        spending_amount (int): 支出額
-        income_amount (int): 収入額
+        schedule(Schdule): 登録するスケジュールのモデル
     """
     session = get_db_session()
     session.add(schedule)

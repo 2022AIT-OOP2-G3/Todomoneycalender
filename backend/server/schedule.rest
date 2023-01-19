@@ -17,6 +17,7 @@ GET http://127.0.0.1:5000/schedule/test/2020/10 HTTP/1.1
 
 ###
 GET http://127.0.0.1:5000/schedule/test/2020/10/01 HTTP/1.1
+
 ###
 DELETE  http://127.0.0.1:5000/schedule/1 HTTP/1.1
 
@@ -35,3 +36,17 @@ Content-Type: application/json
     "spendingAmount" : 20000000,
     "incomeAmount" : 3000
 }
+
+###
+POST http://127.0.0.1:5000/payment/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "uid" : "test",
+    "spendingAmount" : 10000,
+    "date" : "2020-10-01"
+}
+
+###
+GET http://127.0.0.1:5000/payment/test/2020/10 HTTP/1.1
+
