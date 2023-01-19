@@ -4,7 +4,7 @@ import { ChangeEvent, memo, useState, useCallback } from "react";
 import { FormLayout } from "../templates/FormLayout";
 import { FormButton } from "../atom/button/FormButton";
 import { PrimaryInput } from "../atom/input/PrimaryInput";
-import { useSignInUser } from "../../hooks/auth/useSignInUser";
+import { useSignInUser } from "../../hooks/firebase/auth/useSignInUser";
 import { PrimaryParagraph } from "../atom/text/PrimaryParagraph";
 
 export const SignIn = memo(() => {

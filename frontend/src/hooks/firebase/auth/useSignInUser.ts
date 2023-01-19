@@ -1,6 +1,6 @@
 import { useCallback, } from "react";
 import { signInWithEmailAndPassword, } from "firebase/auth"
-import { auth, } from "../firebase/firebase"
+import { auth, } from "../firebase"
 import { useNavigate, } from "react-router-dom";
 
 interface Props {
