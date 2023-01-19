@@ -8,7 +8,7 @@ interface Props {
   children: ReactNode;
 }
 
-export const MenuButton: FC<Props> = memo((props) => {
+export const IconButton: FC<Props> = memo((props) => {
   const { onClick, children } = props;
   return <SButton onClick={onClick}>{children}</SButton>;
 });

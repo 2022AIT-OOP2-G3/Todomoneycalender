@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 import { memo, useState, ChangeEvent, useCallback } from "react";
 
 import { FormLayout } from "../templates/FormLayout";
-import { FormButton } from "../atom/button/FormButton";
-import { PrimaryInput } from "../atom/input/PrimaryInput";
+import { FormButton } from "../atoms/button/FormButton";
+import { FormInput } from "../atoms/input/FormInput";
 import { useSignUpUser } from "../../hooks/auth/useSignUpUser";
-import { PrimaryParagraph } from '../atom/text/PrimaryParagraph';
+import { PrimaryParagraph } from "../atoms/paragraph/PrimaryParagraph";
 
 export const SignUp = memo(() => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmationPassword, setConfirmationPassword] = useState("");
@@ -28,26 +27,36 @@ export const SignUp = memo(() => {
       password: password,
       confirmationPassword: confirmationPassword,
     });
-  }, [signUp]);
+  }, [signUp, email, password, confirmationPassword]);
 
   return (
     <FormLayout>
-      <PrimaryInput
+      <FormInput
         type="text"
+        value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
-      <PrimaryInput
+      <FormInput
         type="password"
+        value={password}
         placeholder="password"
         onChange={onChangePassword}
       />
-      <PrimaryInput
+      <FormInput
         type="password"
+        value={confirmationPassword}
         placeholder="confirmation password"
         onChange={onChangeConfirmationPassword}
       />
-      <FormButton onClick={onClickSubmitForm}>サインイン</FormButton>
+      <FormButton
+        onClick={onClickSubmitForm}
+        disabled={
+          email === "" || password === "" || confirmationPassword === ""
+        }
+      >
+        サインアップ
+      </FormButton>
       <PrimaryParagraph>
         アカウントはすでにお持ちですか？<Link to="/">Sign In</Link>
       </PrimaryParagraph>
