@@ -1,59 +1,70 @@
-import { memo, useState, useCallback, useEffect } from "react";
-import FullCalendar from "@fullcalendar/react"; // must go before plugins
-import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
+import { memo, useState, useEffect } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import FullCalendar from "@fullcalendar/react";
+import { EventInput } from "@fullcalendar/core";
+import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
-import { ModalSchedule } from "../organisms/modal/ModalSchedule";
-import styled from "styled-components";
+import interactionPlugin from "@fullcalendar/interaction";
+
 import { useSchedules } from "../../hooks/get/useSchedules";
+import { ModalSchedule } from "../organisms/modal/ModalSchedule";
+import { modalScheduleState } from "../../store/modalScheduleState";
+import { userScheduleState } from "../../store/userScheduleState";
 
 export const Calendar = memo(() => {
-  const { getSchedules, schedules } = useSchedules();
+  const { getSchedules, schedule } = useSchedules();
+  const setUserSchedule = useSetRecoilState(userScheduleState);
 
-  const [startingDay, setStartingtDay] = useState("");
-  const [endingDay, setEndingDay] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+  const [modalSchedule, setModalSchedule] = useRecoilState(modalScheduleState);
 
-  useEffect(() => getSchedules(), []);
+  const [startingDateTime, setStartingtDateTime] = useState("");
+  const [endingDateTime, setEndingDateTime] = useState("");
 
-  console.log(schedules);
+  useEffect(() => {
+    getSchedules();
+    if (schedule !== null) setUserSchedule(schedule);
+  });
+
+  const test: Array<EventInput> = [
+    { title: "正月", start: "2023-01-01T12:00", end: "2023-01-05T01:00" },
+  ];
 
   return (
     <>
       <ModalSchedule
-        uid="f"
-        startingDay={startingDay}
-        endingDay={endingDay}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
+        start={startingDateTime}
+        end={endingDateTime}
       ></ModalSchedule>
 
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        locale="ja"
+        slotDuration="00:30:00"
         headerToolbar={{
           left: "prev,next today",
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
+        businessHours={{
+          daysOfWeek: [1, 2, 3, 4, 5],
+          startTime: "0:00",
+          endTime: "24:00",
+        }}
+        titleFormat={{
+          year: "numeric",
+          month: "short",
+        }}
         initialView="dayGridMonth"
-        events={[
-          { title: "正月", date: "2023-01-01" },
-          { title: "正月", date: "2023-01-02" },
-        ]}
-        // dateClick={console.log("dateclick!")}
+        events={test}
         weekends={true}
-        // 日付をクリック、または範囲を選択したイベント
         selectable={true}
-        select={(info) => {
-          setIsOpen(!isOpen);
-          setStartingtDay(info.startStr);
-          setEndingDay(info.endStr);
+        select={(selectinfo) => {
+          setStartingtDateTime(selectinfo.startStr.replace(":00+09:00", ""));
+          setEndingDateTime(selectinfo.endStr.replace(":00+09:00", ""));
+          setModalSchedule({ isOpen: !modalSchedule.isOpen });
+          console.log(selectinfo.startStr);
         }}
       />
     </>
   );
 });
-
-const SDiv = styled.div`
-  z-index: 1000;
-`;

@@ -1,19 +1,33 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import styled from "styled-components";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 import { FiPlus } from "react-icons/fi";
+import { modalMoneyState } from "../../../store/modalMoneyState";
+import { ModalMoney } from "../../organisms/modal/ModalMoney";
+import { userScheduleState } from "../../../store/userScheduleState";
 
 export const SideBarContent: FC = () => {
+  const userSchedule = useRecoilValue(userScheduleState);
+  const [modalMoney, setModalMoney] = useRecoilState(modalMoneyState);
+
+  const onClickOpenModal = useCallback(() => {
+    setModalMoney({ isOpen: !modalMoney.isOpen });
+  }, [setModalMoney, modalMoney]);
+
+
   return (
-    <SUl>
-      <p>今月の予算：円</p>
-      <p>今月の収支：円</p>
-      <p>今月の支出：円</p>
-      <p>今月の収入：円</p>
-      <SLi>
-        <FiPlus /> 今月の予算を入力
-      </SLi>
-    </SUl>
+    <>
+      <ModalMoney />
+      <SUl>
+        <p>今月の予算：{userSchedule?.spendingAmount}円</p>
+        <p>今月の支出：{userSchedule?.usingAmount}円</p>
+        <p>今月の収入：{userSchedule?.incomeAmount}円</p>
+        <SLi onClick={onClickOpenModal}>
+          <FiPlus /> 今月の予算を入力
+        </SLi>
+      </SUl>
+    </>
   );
 };
 
@@ -30,6 +44,7 @@ const SUl = styled.ul`
 const SLi = styled.li`
   list-style: none;
   color: gray;
+  cursor: pointer;
   /* &:before {
     margin-right: 10px;
     content: "●";
