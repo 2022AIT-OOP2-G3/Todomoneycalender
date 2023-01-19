@@ -5,7 +5,7 @@ import { DateSchedule } from "./../../types/shedule/dateShudele.d";
 // データ送信がしたい
 
 interface Props {
-    id: string
+    id: number
     uid: string
     startingDate: string 
     endingDate: string 
@@ -24,7 +24,7 @@ export const useSceduleData = () => {
     const { id, uid ,startingDate, endingDate, startingTime, endingTime ,item, spendingAmoun, incomeAmount} = props;
     console.log("POSTtest.")
     axios
-      .post('hpipenv install', {
+      .post('http://127.0.0.1:5000/payment/', {
         props
       })
       .then(function (response) {

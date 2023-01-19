@@ -1,5 +1,5 @@
 export interface ScheduleData{
-    id: string;
+    id: number;
     uid: string;
     startingDate: string;
     endingDate: string;
