@@ -63,6 +63,7 @@ def add_schedule(schedule: Schedule):
     session.add(schedule)
     session.commit()
     session.close()
+
 def delete_schedule(id:int):
     """スケジュールを削除する
 
@@ -71,6 +72,25 @@ def delete_schedule(id:int):
     """
     session = get_db_session()
     session.query(Schedule).filter(Schedule.id == id).delete()
+    session.commit()
+    session.close()
+
+def change_schedule(schedule):
+    """スケジュールを変更する
+
+    """
+    session = get_db_session()
+    session.query(Schedule).filter(Schedule.id == schedule.id).update(
+        {
+            'starting_date': schedule.starting_date,
+            'ending_date': schedule.ending_date,
+            'starting_time':schedule.starting_time, 
+            'ending_time': schedule.ending_time,
+            'item': schedule.item,
+            'spending_amount': schedule.spending_amount,
+            'income_amount':schedule.income_amount,
+        }
+    )
     session.commit()
     session.close()
     
