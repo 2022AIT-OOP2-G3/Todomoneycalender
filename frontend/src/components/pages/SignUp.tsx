@@ -27,22 +27,25 @@ export const SignUp = memo(() => {
       password: password,
       confirmationPassword: confirmationPassword,
     });
-  }, [signUp]);
+  }, [signUp, email, password, confirmationPassword]);
 
   return (
     <FormLayout>
       <FormInput
         type="text"
+        value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
       <FormInput
         type="password"
+        value={password}
         placeholder="password"
         onChange={onChangePassword}
       />
       <FormInput
         type="password"
+        value={confirmationPassword}
         placeholder="confirmation password"
         onChange={onChangeConfirmationPassword}
       />
@@ -52,7 +55,7 @@ export const SignUp = memo(() => {
           email === "" || password === "" || confirmationPassword === ""
         }
       >
-        サインイン
+        サインアップ
       </FormButton>
       <PrimaryParagraph>
         アカウントはすでにお持ちですか？<Link to="/">Sign In</Link>

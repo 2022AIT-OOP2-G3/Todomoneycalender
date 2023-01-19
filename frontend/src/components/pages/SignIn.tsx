@@ -26,11 +26,13 @@ export const SignIn = memo(() => {
     <FormLayout>
       <FormInput
         type="text"
+        value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
       <FormInput
         type="password"
+        value={password}
         placeholder="password"
         onChange={onChangePassword}
       />
@@ -38,7 +40,7 @@ export const SignIn = memo(() => {
         onClick={onClickSignIn}
         disabled={email === "" || password === ""}
       >
-        サインアップ
+        サインイン
       </FormButton>
       <PrimaryParagraph>
         新規登録はお済みですか？
