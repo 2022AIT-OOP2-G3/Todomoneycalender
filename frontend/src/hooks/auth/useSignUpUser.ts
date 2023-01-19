@@ -46,7 +46,6 @@ export const useSignUpUser = () => {
             console.error(error)
           }
       }); 
-
   }, [navigate]);
 
   return { signUp };
