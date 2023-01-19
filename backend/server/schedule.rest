@@ -25,7 +25,17 @@ Content-Type: application/json
 {
     "uid" : "test",
     "spendingAmount" : 10000,
-    "date" : "2020-10-01"
+    "date" : "2020-10"
 }
 ###
 GET http://127.0.0.1:5000/payment/test/2020/10 HTTP/1.1
+
+###
+POST http://127.0.0.1:5000/payment/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "uid" : "test",
+    "spendingAmount" : 20000,
+    "date" : "2020-10"
+}
