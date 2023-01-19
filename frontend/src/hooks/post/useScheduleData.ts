@@ -1,12 +1,10 @@
 import { useCallback } from "react";
 import axios from "axios";
+import { auth } from "../auth/firebase/firebase";
 
 interface Props {
-  uid: string;
-  startingDay: string;
-  endingDay: string;
-  startingTime: string;
-  endingTime: string;
+  startingDateTime: string;
+  endingDateTime: string;
   item: string;
   spendingAmount: number;
   incomeAmount: number;
@@ -15,23 +13,29 @@ interface Props {
 export const useScheduleData = () => {
   const postScheduleData = useCallback((props: Props) => {
     const {
-      uid,
-      startingDay,
-      endingDay,
-      startingTime,
-      endingTime,
+      startingDateTime,
+      endingDateTime,
       item,
       spendingAmount,
       incomeAmount,
     } = props;
 
+    const uid = auth.currentUser?.uid;
+
+    if (uid === null) {
+      alert("登録に失敗しました");
+      return;
+    }
+
     axios
       .post("http://127.0.0.1:5000/schedule/", {
         uid: uid,
-        startingDay: startingDay,
-        endingDay: endingDay,
-        startingTime: startingTime,
-        endingTime: endingTime,
+        startingDateTime,
+        endingDateTime,
+        // startingDay: startingDay,
+        // endingDay: endingDay,
+        // startingTime: startingTime,
+        // endingTime: endingTime,
         item: item,
         spendingAmount: spendingAmount,
         incomeAmount: incomeAmount,
