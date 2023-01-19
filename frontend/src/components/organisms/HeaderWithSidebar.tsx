@@ -5,13 +5,6 @@ import styled from "styled-components";
 import { IconButton } from "../atoms/button/IconButton";
 import { SideBarContent } from "../molecules/sidebar/SideBarContent";
 
-// デモデータ
-const SideBarItems = [
-  { color: "red", title: "バイト" },
-  { color: "blue", title: "飲み会" },
-  { color: "green", title: "ライブ" },
-];
-
 export const HeaderWithSidebar: FC = memo(() => {
   const [isOpen, setIsOpen] = useState(true);
 

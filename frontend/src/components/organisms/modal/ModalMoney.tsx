@@ -1,22 +1,17 @@
+import { FC, useState, ChangeEvent, useCallback, memo } from "react";
 import styled from "styled-components";
-import { FC, useState, ChangeEvent, useCallback } from "react";
+import { useRecoilState } from "recoil";
 import { FiXCircle } from "react-icons/fi";
 
+import { ModalLayout } from "../../templates/ModalLayOut";
 import { ModalInput } from "../../atoms/input/ModalInput";
 import { FormButton } from "../../atoms/button/FormButton";
 import { CloseButton } from "../../atoms/button/CloseButton";
-import { ModalLayout } from "../../templates/ModalLayOut";
-import { useScheduleData } from "../../../hooks/post/useScheduleData";
 import { useMoneyData } from "../../../hooks/post/useMoneyData";
+import { modalMoneyState } from "../../../store/modalMoneyState";
 
-type Props = {
-  uid: string;
-  isOpen: boolean;
-  setIsOpen: (value: boolean) => void;
-};
-
-export const ModalMoney: FC<Props> = (props) => {
-  const { uid, isOpen, setIsOpen } = props;
+export const ModalMoney: FC = memo(() => {
+  const [modalMoney, setModalMoney] = useRecoilState(modalMoneyState);
 
   const { postMoneyData } = useMoneyData();
 
@@ -26,29 +21,29 @@ export const ModalMoney: FC<Props> = (props) => {
     setSpendingAmount(e.target.value);
 
   const onClickCloseModal = useCallback(() => {
-    setIsOpen(!isOpen);
-  }, [setIsOpen, isOpen]);
+    setModalMoney({ isOpen: !modalMoney.isOpen });
+  }, [setModalMoney, modalMoney]);
 
   const onClickPostData = useCallback(() => {
     postMoneyData({
-      uid: uid,
       spendingAmount: Number(spendingAmount),
     });
-    setIsOpen(!isOpen);
-  }, [postMoneyData, setIsOpen, uid, isOpen, spendingAmount]);
+    setModalMoney({ isOpen: !modalMoney.isOpen });
+  }, [postMoneyData, setModalMoney, modalMoney, spendingAmount]);
 
   return (
     <>
-      {isOpen ? (
+      {modalMoney.isOpen ? (
         <ModalLayout>
-          {" "}
           <CloseButton onClick={onClickCloseModal}>
             <FiXCircle color="gray" size={20} />
           </CloseButton>
+          <SH1>今月の予算</SH1>
           <FormGroup>
             <label>今月の予算</label>
             <ModalInput
               type="number"
+              value={spendingAmount}
               placeholder=""
               onChange={onChangeSpendingAmount}
             />
@@ -57,22 +52,13 @@ export const ModalMoney: FC<Props> = (props) => {
             onClick={onClickPostData}
             disabled={spendingAmount === ""}
           >
-            予定を追加
+            予算を決定
           </FormButton>
         </ModalLayout>
-      ) : (
-        <h1></h1>
-      )}
+      ) : null}
     </>
   );
-};
-
-const FormTimeGroup = styled.div`
-  float: left;
-  padding: 30px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-`;
+});
 
 const FormGroup = styled.div`
   clear: both;
