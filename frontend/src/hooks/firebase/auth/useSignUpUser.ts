@@ -20,8 +20,7 @@ export const useSignUpUser = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         console.log('user created');
-        const uid = auth.currentUser?.uid
-        navigate('/' + uid + '/calender/')
+        navigate('/' + userCredential.user.uid + '/calender/')
       })
       .catch((error) => {
         switch (error.code) {
