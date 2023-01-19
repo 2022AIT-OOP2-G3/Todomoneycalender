@@ -23,7 +23,7 @@ export const SignUp = memo(() => {
     setConfirmationPassword(e.target.value);
 
   const onClickSubmitForm = useCallback(() => {
-    signUp({email: email, password: password, confirmationPassword: confirmationPassword,});
+    signUp({ email: email, password: password, confirmationPassword: confirmationPassword, });
     // setEmail(""); setPassword(""); setConfirmationPassword("");
   }, [signUp, email, password, confirmationPassword]);
 
