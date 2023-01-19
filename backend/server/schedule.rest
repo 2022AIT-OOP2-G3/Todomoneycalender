@@ -44,7 +44,7 @@ Content-Type: application/json
 {
     "uid" : "test",
     "spendingAmount" : 10000,
-    "date" : "2020-10-01"
+    "date" : "2020-10"
 }
 
 ###
