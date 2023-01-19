@@ -21,7 +21,6 @@ export const useSignInUser = () => {
         navigate('/'+ uid +'/calender/')
       })
       .catch((error) => {
-        alert(error)
         switch (error.code) {
           case "auth/network-request-failed":
             alert("通信がエラーになったのか、またはタイムアウトになりました。通信環境がいい所で再度やり直してください。");
