@@ -1,14 +1,14 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
-import { EventInput } from "@fullcalendar/core";
+import { DateSelectArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { auth } from "../../hooks/firebase/firebase";
-import { useSchedules } from "../../hooks/get/useSchedules";
+import { useSchedules } from "../../hooks/http/get/useSchedules";
 import { ModalSchedule } from "../organisms/modal/ModalSchedule";
 import { modalScheduleState } from "../../store/modalScheduleState";
 import { userScheduleState } from "../../store/userScheduleState";
@@ -22,28 +22,48 @@ export const Calendar = memo(() => {
 
   const [startingDateTime, setStartingtDateTime] = useState("");
   const [endingDateTime, setEndingDateTime] = useState("");
+  const [currentYear, setCurrentYear] = useState("");
+  const [currentMonth, setCurrentMonth] = useState("");
+
+  const onClickDateTime = (selectinfo: DateSelectArg) => {
+    if (!selectinfo.startStr.match(/T/)) {
+      setStartingtDateTime(selectinfo.startStr + "T00:00");
+      setEndingDateTime(selectinfo.endStr + "T00:00");
+    } else {
+      setStartingtDateTime(selectinfo.startStr.replace(":00+09:00", ""));
+      setEndingDateTime(selectinfo.endStr.replace(":00+09:00", ""));
+    }
+
+    setModalSchedule({ isOpen: !modalSchedule.isOpen });
+  };
+
+  const onClickTransitionButton = useCallback((fetchInfo: any) => {
+    setCurrentYear(fetchInfo.start.getFullYear().toString());
+    setCurrentMonth(fetchInfo.end.getMonth().toString());
+    if (fetchInfo.end.getMonth().toString() === "0") setCurrentMonth("12");
+  }, []);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
-    if (!user) {
-      navigate("/");
-    }
-  });
-    getSchedules();
+      if (!user) {
+        navigate("/");
+      }
+    });
+    getSchedules({
+      year: currentYear,
+      month: currentMonth,
+    });
     if (schedule !== null) setUserSchedule(schedule);
-  });
-
-  const test: Array<EventInput> = [
-    { title: "正月", start: "2023-01-01T12:00", end: "2023-01-05T01:00" },
-  ];
+  }, [currentYear, currentMonth]);
 
   return (
     <>
-
-      <ModalSchedule
-        start={startingDateTime}
-        end={endingDateTime}
-      ></ModalSchedule>
+      {modalSchedule.isOpen ? (
+        <ModalSchedule
+          start={startingDateTime}
+          end={endingDateTime}
+        ></ModalSchedule>
+      ) : null}
 
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -53,6 +73,9 @@ export const Calendar = memo(() => {
           left: "prev,next today",
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        events={(fetchInfo: any) => {
+          onClickTransitionButton(fetchInfo);
         }}
         businessHours={{
           daysOfWeek: [1, 2, 3, 4, 5],
@@ -64,14 +87,13 @@ export const Calendar = memo(() => {
           month: "short",
         }}
         initialView="dayGridMonth"
-        events={test}
         weekends={true}
+        // events={[
+        //   { title: "正月", start: "2023-01-01 12:00", end: "2023-01-05T01:00" },
+        // ]}
         selectable={true}
         select={(selectinfo) => {
-          setStartingtDateTime(selectinfo.startStr.replace(":00+09:00", ""));
-          setEndingDateTime(selectinfo.endStr.replace(":00+09:00", ""));
-          setModalSchedule({ isOpen: !modalSchedule.isOpen });
-          console.log(selectinfo.startStr);
+          onClickDateTime(selectinfo);
         }}
       />
     </>

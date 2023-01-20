@@ -7,7 +7,7 @@ import { ModalLayout } from "../../templates/ModalLayOut";
 import { ModalInput } from "../../atoms/input/ModalInput";
 import { FormButton } from "../../atoms/button/FormButton";
 import { CloseButton } from "../../atoms/button/CloseButton";
-import { useMoneyData } from "../../../hooks/post/useMoneyData";
+import { useMoneyData } from "../../../hooks/http/post/useMoneyData";
 import { modalMoneyState } from "../../../store/modalMoneyState";
 
 export const ModalMoney: FC = memo(() => {
@@ -32,31 +32,24 @@ export const ModalMoney: FC = memo(() => {
   }, [postMoneyData, setModalMoney, modalMoney, spendingAmount]);
 
   return (
-    <>
-      {modalMoney.isOpen ? (
-        <ModalLayout>
-          <CloseButton onClick={onClickCloseModal}>
-            <FiXCircle color="gray" size={20} />
-          </CloseButton>
-          <SH1>今月の予算</SH1>
-          <FormGroup>
-            <label>今月の予算</label>
-            <ModalInput
-              type="number"
-              value={spendingAmount}
-              placeholder=""
-              onChange={onChangeSpendingAmount}
-            />
-          </FormGroup>
-          <FormButton
-            onClick={onClickPostData}
-            disabled={spendingAmount === ""}
-          >
-            予算を決定
-          </FormButton>
-        </ModalLayout>
-      ) : null}
-    </>
+    <ModalLayout>
+      <CloseButton onClick={onClickCloseModal}>
+        <FiXCircle color="gray" size={20} />
+      </CloseButton>
+      <SH1>今月の予算</SH1>
+      <FormGroup>
+        <label>今月の予算</label>
+        <ModalInput
+          type="number"
+          value={spendingAmount}
+          placeholder=""
+          onChange={onChangeSpendingAmount}
+        />
+      </FormGroup>
+      <FormButton onClick={onClickPostData} disabled={spendingAmount === ""}>
+        予算を決定
+      </FormButton>
+    </ModalLayout>
   );
 });
 
