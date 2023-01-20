@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { memo, useState, ChangeEvent, useCallback } from "react";
 
 import { FormLayout } from "../templates/FormLayout";
-import { FormButton } from "../atoms/button/FormButton";
 import { FormInput } from "../atoms/input/FormInput";
+import { FormButton } from "../atoms/button/FormButton";
 import { useSignUpUser } from "../../hooks/auth/useSignUpUser";
 import { PrimaryParagraph } from "../atoms/paragraph/PrimaryParagraph";
+
 
 export const SignUp = memo(() => {
   const [email, setEmail] = useState("");

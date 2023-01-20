@@ -1,17 +1,20 @@
 import { memo, useState, useEffect } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import { EventInput } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
+import { auth } from "../../hooks/firebase/firebase";
 import { useSchedules } from "../../hooks/get/useSchedules";
 import { ModalSchedule } from "../organisms/modal/ModalSchedule";
 import { modalScheduleState } from "../../store/modalScheduleState";
 import { userScheduleState } from "../../store/userScheduleState";
 
 export const Calendar = memo(() => {
+  const navigate = useNavigate();
   const { getSchedules, schedule } = useSchedules();
   const setUserSchedule = useSetRecoilState(userScheduleState);
 
@@ -21,6 +24,11 @@ export const Calendar = memo(() => {
   const [endingDateTime, setEndingDateTime] = useState("");
 
   useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+    if (!user) {
+      navigate("/");
+    }
+  });
     getSchedules();
     if (schedule !== null) setUserSchedule(schedule);
   });

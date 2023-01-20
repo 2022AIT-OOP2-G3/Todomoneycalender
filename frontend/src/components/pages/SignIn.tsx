@@ -7,6 +7,7 @@ import { FormInput } from "../atoms/input/FormInput";
 import { useSignInUser } from "../../hooks/auth/useSignInUser";
 import { PrimaryParagraph } from "../atoms/paragraph/PrimaryParagraph";
 
+
 export const SignIn = memo(() => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

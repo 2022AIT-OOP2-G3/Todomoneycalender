@@ -1,6 +1,6 @@
 import { useCallback, } from "react";
 import { createUserWithEmailAndPassword, } from "firebase/auth"
-import { auth, } from "../firebase/firebase"
+import { auth, } from "../firebase"
 import { useNavigate, } from "react-router-dom";
 
 interface Props {
@@ -17,11 +17,11 @@ export const useSignUpUser = () => {
     // パスワードと再入力されたパスワードが違う場合
     if (password !== confirmationPassword) alert("パスワードが一致しません");
     // 登録
-    createUserWithEmailAndPassword(auth, email, password )
-      .then(( userCredential ) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
         console.log('user created');
         const uid = auth.currentUser?.uid
-        navigate('/'+ uid +'/calender/')
+        navigate('/' + uid + '/calender/')
       })
       .catch((error) => {
         switch (error.code) {
@@ -44,8 +44,8 @@ export const useSignUpUser = () => {
           default:  //想定外
             alert("アカウントの作成に失敗しました。通信環境がいい所で再度やり直してください。");
             console.error(error)
-          }
-      }); 
+        }
+      });
   }, [navigate]);
 
   return { signUp };

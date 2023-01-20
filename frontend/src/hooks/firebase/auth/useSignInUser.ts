@@ -1,6 +1,6 @@
 import { useCallback, } from "react";
 import { signInWithEmailAndPassword, } from "firebase/auth"
-import { auth, } from "../firebase/firebase"
+import { auth, } from "../firebase"
 import { useNavigate, } from "react-router-dom";
 
 interface Props {
@@ -18,7 +18,7 @@ export const useSignInUser = () => {
       .then((user) => {
         console.log('ログイン成功=', user.user.uid)
         const uid = auth.currentUser?.uid
-        navigate('/'+ uid +'/calender/')
+        navigate('/' + uid + '/calender/')
       })
       .catch((error) => {
         switch (error.code) {
@@ -40,8 +40,8 @@ export const useSignInUser = () => {
           default:  //想定外
             alert("ログインに失敗しました。通信環境がいい所で再度やり直してください。");
             console.error(error)
-          }
-      })    
+        }
+      })
 
   }, [navigate]);
 
