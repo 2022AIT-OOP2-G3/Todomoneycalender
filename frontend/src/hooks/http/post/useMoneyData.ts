@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback } from "react";
-import { auth } from "../../auth/firebase/firebase";
+import { auth } from "../../firebase/firebase"; 
 
 interface Props {
   spendingAmount: number;
