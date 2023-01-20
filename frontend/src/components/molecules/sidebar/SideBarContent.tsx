@@ -15,10 +15,10 @@ export const SideBarContent: FC = () => {
     setModalMoney({ isOpen: !modalMoney.isOpen });
   }, [setModalMoney, modalMoney]);
 
-
   return (
     <>
-      <ModalMoney />
+      {modalMoney.isOpen ? <ModalMoney /> : null}
+
       <SUl>
         <p>今月の予算：{userSchedule?.spendingAmount}円</p>
         <p>今月の支出：{userSchedule?.usingAmount}円</p>

@@ -7,7 +7,7 @@ import { ModalLayout } from "../../templates/ModalLayOut";
 import { ModalInput } from "../../atoms/input/ModalInput";
 import { FormButton } from "../../atoms/button/FormButton";
 import { CloseButton } from "../../atoms/button/CloseButton";
-import { useScheduleData } from "../../../hooks/post/useScheduleData";
+import { useScheduleData } from "../../../hooks/http/post/useScheduleData";
 import { modalScheduleState } from "../../../store/modalScheduleState";
 
 type Props = {
@@ -41,12 +41,8 @@ export const ModalSchedule: FC<Props> = (props) => {
 
   useEffect(() => {
     setStartingDateTime(start);
-    setStartingDateTime(end);
+    setEndingDateTime(end);
   }, [start, end]);
-  // console.log(startingDay.replace(":00+09:00", ""));
-
-  console.log(start + startingDateTime);
-  // console.log(startingDateTime);
 
   const onClickCloseModal = useCallback(() => {
     setModalSchedule({ isOpen: !modalSchedule.isOpen });
@@ -72,73 +68,69 @@ export const ModalSchedule: FC<Props> = (props) => {
   ]);
 
   return (
-    <>
-      {modalSchedule.isOpen ? (
-        <ModalLayout>
-          <CloseButton onClick={onClickCloseModal}>
-            <FiXCircle color="gray" size={20} />
-          </CloseButton>
-          <SH1>予定登録</SH1>
-          <FormGroup>
-            <label>予定</label>
-            <ModalInput
-              type="text"
-              value={item}
-              placeholder=""
-              onChange={onChangeItem}
-            />
-          </FormGroup>
-          <FormTimeGroup>
-            <label>開始時刻</label>
-            <ModalInput
-              type="datetime-local"
-              value={startingDateTime}
-              placeholder=""
-              onChange={onChangeStartingTime}
-            />
-          </FormTimeGroup>
-          <FormTimeGroup>
-            <label>終了時刻</label>
-            <ModalInput
-              type="datetime-local"
-              value={endingDateTime}
-              placeholder=""
-              onChange={onChangeEndingTime}
-            />
-          </FormTimeGroup>
-          <FormGroup>
-            <label>予定による支出</label>
-            <ModalInput
-              type="number"
-              value={spendingAmount}
-              placeholder=""
-              onChange={onChangeSpendingAmount}
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>予定による収入</label>
-            <ModalInput
-              type="number"
-              value={incomeAmount}
-              placeholder=""
-              onChange={onChangeIncomeAmount}
-            />
-          </FormGroup>
-          <FormButton
-            onClick={onClickPostData}
-            disabled={
-              startingDateTime === "" ||
-              endingDateTime === "" ||
-              item === "" ||
-              spendingAmount === "" ||
-              incomeAmount === ""
-            }
-          >
-            予定を追加
-          </FormButton>
-        </ModalLayout>
-      ) : null}
-    </>
+    <ModalLayout>
+      <CloseButton onClick={onClickCloseModal}>
+        <FiXCircle color="gray" size={20} />
+      </CloseButton>
+      <SH1>予定登録</SH1>
+      <FormGroup>
+        <label>予定</label>
+        <ModalInput
+          type="text"
+          value={item}
+          placeholder=""
+          onChange={onChangeItem}
+        />
+      </FormGroup>
+      <FormTimeGroup>
+        <label>開始時刻</label>
+        <ModalInput
+          type="datetime-local"
+          value={startingDateTime}
+          placeholder=""
+          onChange={onChangeStartingTime}
+        />
+      </FormTimeGroup>
+      <FormTimeGroup>
+        <label>終了時刻</label>
+        <ModalInput
+          type="datetime-local"
+          value={endingDateTime}
+          placeholder=""
+          onChange={onChangeEndingTime}
+        />
+      </FormTimeGroup>
+      <FormGroup>
+        <label>予定による支出</label>
+        <ModalInput
+          type="number"
+          value={spendingAmount}
+          placeholder=""
+          onChange={onChangeSpendingAmount}
+        />
+      </FormGroup>
+      <FormGroup>
+        <label>予定による収入</label>
+        <ModalInput
+          type="number"
+          value={incomeAmount}
+          placeholder=""
+          onChange={onChangeIncomeAmount}
+        />
+      </FormGroup>
+      <FormButton
+        onClick={onClickPostData}
+        disabled={
+          startingDateTime === "" ||
+          endingDateTime === "" ||
+          item === "" ||
+          spendingAmount === "" ||
+          incomeAmount === ""
+        }
+      >
+        予定を追加
+      </FormButton>
+    </ModalLayout>
   );
 };
 
