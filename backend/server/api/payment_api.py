@@ -25,15 +25,22 @@ def post_payment():
     json: dict = cast(dict, request.get_json())
     
     error_message: str = ""
-    for param in payment_model.Payment.get_date_param_name():
-        json_key = convert_to_camel(param)
-        if json_key not in json:
-            error_message += f"{param} is not found\n"
-            continue
-        if not is_date_convertible(json[json_key]):
-            error_message += f"{param} is not date\n"
-            continue
-        json[json_key] = t.datetime.strptime(json[json_key], '%Y-%m-%d')
+    # for param in payment_model.Payment.get_date_param_name():
+    #     json_key = convert_to_camel(param)
+    #     if json_key not in json:
+    #         error_message += f"{param} is not found\n"
+    #         continue
+    #     if not is_date_convertible(json[json_key]):
+    #         error_message += f"{param} is not date\n"
+    #         continue
+    #     json[json_key] = t.datetime.strptime(json[json_key], '%Y-%m')
+    if "date" not in json:
+        error_message += "date is not found"
+    else:
+        if not is_date_convertible(json["date"] + "-01"):
+            error_message += "date is not date"
+    
+    json["date"] = t.datetime.strptime(json["date"], '%Y-%m')
     
     if error_message != "":
         return jsonify({'status': 'NG', 'message': error_message})
@@ -48,7 +55,7 @@ def post_payment():
     payment = payment_model.Payment(
         uid,date,spending_amount)
     
-    payment_db.add_Payment(payment)
+    payment_db.add_payment(payment)
     return jsonify({'status': 'OK'})
 
 
@@ -62,7 +69,8 @@ def get_monthly_payments(uid: str, year: int, month: int):
         month (int): 月
 
     Returns:
-        List[Payment]: 支出のリスト
+        'spendingAmount'
+        'date'
     """
     if not is_date_convertible(f'{year}-{month}-01'):
         return jsonify({'status': 'NG', 'message': 'date is not date'})
@@ -76,12 +84,6 @@ def get_monthly_payments(uid: str, year: int, month: int):
     result = {
         'date': t.datetime.strftime(datatime, '%Y-%m'),
         'spendingAmount': total_spending_amount,
-        'payment': list(map(lambda payment:
-                        {
-                            'spendingAmount': payment.spending_amount,
-                        },
-            payments
-        ))
     }
 
     return jsonify(result)

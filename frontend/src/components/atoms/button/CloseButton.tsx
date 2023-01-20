@@ -1,4 +1,4 @@
-import { FC, memo, ReactNode } from "react";
+import { memo, ReactNode, FC } from "react";
 import styled from "styled-components";
 
 import { BaseButton } from "./BaseButton";
@@ -8,12 +8,12 @@ interface Props {
   children: ReactNode;
 }
 
-export const FormButton: FC<Props> = memo((props) => {
+export const CloseButton: FC<Props> = memo((props) => {
   const { onClick, children } = props;
   return <SButton onClick={onClick}>{children}</SButton>;
 });
 
 const SButton = styled(BaseButton)`
-  width: 100px;
-  background-color: green;
+  background-color: white;
+  float: right;
 `;
