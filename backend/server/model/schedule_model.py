@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import Dict, Tuple
+from utility.convert_json_key import convert_to_camel, convert_to_snake
+import inspect
 
 from cerberus import Validator
 from sqlalchemy import Column, DateTime, Integer, String, func
@@ -63,6 +65,41 @@ class Schedule(Base):
             if name.endswith('_time'):
                 yield name
 
+    @classmethod
+    def get_param_name(cls):
+        """カラム名の一覧を取得する
+
+        Returns:
+            yeild name: カラム名
+        """
+        aneditable_param = ['id', 'created_at', 'updated_at']
+        method_list = list(map(
+            lambda x: x[0], inspect.getmembers(cls, inspect.ismethod)))
+        for name in cls.__dict__:
+            if name.startswith('_') or name in aneditable_param or name in method_list:
+                continue
+            yield name
+
+    @classmethod
+    def generate_from_json(cls, params: Dict):
+        """JSONからデータを生成する
+
+        Args:
+            params (Dict): JSONのデータ
+
+        Returns:
+            Schedule: 生成したデータ
+        """
+        for name in cls.get_param_name():
+            json_name = convert_to_camel(name)
+            if json_name not in params:
+                params[name] = None
+            else:
+                value = params[json_name]
+                del params[json_name]
+                params[name] = value
+        return cls(**params)
+
 
 def validate(params: Dict) -> Tuple[bool, dict]:
     """送られてきたデータのチェックを行う
@@ -72,7 +109,6 @@ def validate(params: Dict) -> Tuple[bool, dict]:
         str: 失敗した場合、エラーメッセージを返す
     """
     schema = {
-        'id' : {'type': 'integer', 'required': False},
         'uid': {'type': 'string', 'required': True, 'maxlength': 255},
         'startingDate': {'type': 'datetime', 'required': True},
         'endingDate': {'type': 'datetime', 'required': True},
@@ -84,6 +120,22 @@ def validate(params: Dict) -> Tuple[bool, dict]:
     }
     v = Validator(schema)
     return v.validate(params), v.errors  # type: ignore
+
+
+def is_valid_parametor(params) -> Tuple[bool, str]:
+    """有効なパラメータかどうかを判定する
+
+    Returns:
+        bool: 有効なパラメータであるか
+        str: 失敗した場合、エラーメッセージを返す
+    """
+    message = ''
+
+    for name in params:
+        if convert_to_snake(name) not in Schedule.get_param_name():
+            message = f'invalid parameter: {name}'
+
+    return True if message == '' else False, message
 
 
 def create_table():
