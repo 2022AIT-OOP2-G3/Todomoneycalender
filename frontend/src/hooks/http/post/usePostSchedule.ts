@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { auth } from "../../firebase/firebase";
+
+import { auth } from "../../firebase/firebase"; 
+import { PostSchedule } from "../../../../types/http/post/postSchedule";
 
 interface Props {
   startingDateTime: string;
@@ -10,7 +12,7 @@ interface Props {
   incomeAmount: number;
 }
 
-export const useScheduleData = () => {
+export const usePostSchedule = () => {
   const postScheduleData = useCallback((props: Props) => {
     const {
       startingDateTime,
@@ -28,14 +30,10 @@ export const useScheduleData = () => {
     }
 
     axios
-      .post("http://127.0.0.1:5000/schedule/", {
+      .post<PostSchedule>("http://127.0.0.1:5000/schedule/", {
         uid: uid,
         startingDateTime,
         endingDateTime,
-        // startingDay: startingDay,
-        // endingDay: endingDay,
-        // startingTime: startingTime,
-        // endingTime: endingTime,
         item: item,
         spendingAmount: spendingAmount,
         incomeAmount: incomeAmount,

@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useCallback } from "react";
-import { auth } from "../../firebase/firebase"; 
 
 interface Props {
   id: number;
 }
 
-export const useScheduleId = () => {
+export const useDeleteScheduleId = () => {
   const deleteSchedule = useCallback((props: Props) => {
     const { id } = props;
 
