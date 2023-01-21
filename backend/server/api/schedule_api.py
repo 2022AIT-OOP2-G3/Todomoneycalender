@@ -3,10 +3,12 @@ from typing import cast
 
 from flask import Blueprint, jsonify, request
 
+from settings import date_time_format, manth_format
 import db.schedule_db as schedule_db
+import db.payment_db as payment_db
 import model.schedule_model as schedule_model
-from utility.is_date_convertible import (is_date_convertible,
-                                     is_time_convertible)
+from utility.is_date_convertible import (
+    is_date_time_convertible, is_date_convertible, is_manth_convertible)
 
 from utility.convert_json_key import convert_to_camel
 
@@ -22,7 +24,7 @@ def post_schedule():
     """
 
     if not request.is_json:
-        return jsonify({'status': 'NG', 'message': "deta is not json"})
+        return jsonify({'status': 'NG', 'message': "data is not json"})
     json: dict = cast(dict, request.get_json())
 
     error_message: str = ""
@@ -32,20 +34,10 @@ def post_schedule():
         if json_key not in json:
             error_message += f"{param} is not found\n"
             continue
-        if not is_date_convertible(json[json_key]):
-            error_message += f"{param} is not date\n"
+        if not is_date_time_convertible(json[json_key]):
+            error_message += f"{param} is not datetime\n"
             continue
-        json[json_key] = t.datetime.strptime(json[json_key], '%Y-%m-%d')
-
-    for param in schedule_model.Schedule.get_time_param_name():
-        json_key = convert_to_camel(param)
-        if json_key not in json:
-            error_message += f"{param} is not found\n"
-            continue
-        if not is_time_convertible(json[json_key]):
-            error_message += f"{param} is not time\n"
-            continue
-        json[json_key] = t.datetime.strptime(json[json_key], '%H:%M')
+        json[json_key] = t.datetime.strptime(json[json_key], date_time_format)
 
     if error_message != "":
         return jsonify({'status': 'NG', 'message': error_message})
@@ -54,16 +46,7 @@ def post_schedule():
     if not check:
         return jsonify({'status': 'NG', 'message': errors})
 
-    uid = json['uid']
-    starting_date = json['startingDate']
-    ending_date = json['endingDate']
-    starting_time = json['startingTime']
-    ending_time = json['endingTime']
-    item = json['item']
-    spending_amount = json['spendingAmount']
-    income_amount = json['incomeAmount']
-    schedule = schedule_model.Schedule(
-        uid, starting_date, ending_date, starting_time, ending_time, item, spending_amount, income_amount)
+    schedule = schedule_model.Schedule.generate_from_json(json)
     schedule_db.add_schedule(schedule)
     return jsonify({'status': 'OK'})
 
@@ -77,14 +60,13 @@ def get_monthly_schedules(uid: str, year: int, month: int):
         year (int): 年
         month (int): 月
     """
-    if not is_date_convertible(f'{year}-{month}-01'):
-        return jsonify({'status': 'NG', 'message': 'date is not date'})
-    datatime = t.datetime(year, month, 1)
-    schedules = schedule_db.get_monthly_schedules(uid, datatime)
+    if not is_manth_convertible(f'{year}-{month}'):
+        return jsonify({'status': 'NG', 'message': 'data is not date'})
+    datetime = t.datetime(year, month, 1)
+    schedules = schedule_db.get_monthly_schedules(uid, datetime)
+    payment = payment_db.get_monthly_payment(uid, datetime)
+    spending_amount = payment.spending_amount if payment else 0
 
-    total_spending_amount = sum(
-        map(lambda schedule: schedule.spending_amount, schedules)
-    )
     total_using_amount = sum(
         map(lambda schedule: schedule.spending_amount, schedules)
     )
@@ -93,17 +75,15 @@ def get_monthly_schedules(uid: str, year: int, month: int):
     )
 
     result = {
-        'date': t.datetime.strftime(datatime, '%Y-%m'),
-        'spendingAmount': total_spending_amount,
+        'date': t.datetime.strftime(datetime, '%Y-%m'),
+        'spendingAmount': spending_amount,
         'usingAmount': total_using_amount,
         'incomeAmount': total_income_amount,
         'schedule': list(map(lambda schedule:
                          {
                              'id': schedule.id,
-                             'startingDate': schedule.starting_date.strftime('%Y-%m-%d'),
-                             'endingDate': schedule.ending_date.strftime('%Y-%m-%d'),
-                             'startingTime': schedule.starting_time.strftime('%H:%M'),
-                             'endingTime': schedule.ending_time.strftime('%H:%M'),
+                             'startingDateTime': schedule.starting_date_time.strftime(date_time_format),
+                             'endingDateTime': schedule.ending_date_time.strftime(date_time_format),
                              'item': schedule.item,
                              'spendingAmount': schedule.spending_amount,
                          },
@@ -126,16 +106,15 @@ def get_daily_schedules(uid: str, year: int, month: int, day: int):
     """
 
     if not is_date_convertible(f'{year}-{month}-{day}'):
-        return jsonify({'status': 'NG', 'message': 'date is not date'})
+        return jsonify({'status': 'NG', 'message': 'data is not date'})
+
     datatime = t.datetime(year, month, day)
     schedules = schedule_db.get_daily_schedules(uid, datatime)
     result = list(map(lambda schedule:
                       {
                           "id": schedule.id,
-                          "startingDate": schedule.starting_date.strftime('%Y-%m-%d'),
-                          "endingDate": schedule.ending_date.strftime('%Y-%m-%d'),
-                          "startingTime": schedule.starting_time.strftime('%H:%M'),
-                          "endingTime": schedule.ending_time.strftime('%H:%M'),
+                          "startingDateTime": schedule.starting_date_time.strftime(date_time_format),
+                          "endingDateTime": schedule.ending_date_time.strftime(date_time_format),
                           "item": schedule.item,
                           "spendingAmoun": schedule.spending_amount,
                           "incomeAmount": schedule.income_amount,
@@ -143,6 +122,7 @@ def get_daily_schedules(uid: str, year: int, month: int, day: int):
                       schedules
                       ))
     return jsonify(result)
+
 
 @ schedule_module.route('/<int:id>', methods=['DELETE'])
 def delete_schedule(id: int):
@@ -155,12 +135,13 @@ def delete_schedule(id: int):
     schedule_db.delete_schedule(id)
     return jsonify({'status': 'OK'})
 
+
 @ schedule_module.route('/', methods=['PUT'])
 def change_schedule():
     """指定したスケジュールを変更する
     """
     if not request.is_json:
-        return jsonify({'status': 'NG', 'message': "deta is not json"})
+        return jsonify({'status': 'NG', 'message': "data is not json"})
     json: dict = cast(dict, request.get_json())
 
     error_message: str = ""
@@ -168,45 +149,29 @@ def change_schedule():
     for param in schedule_model.Schedule.get_date_param_name():
         json_key = convert_to_camel(param)
         if json_key not in json:
-            error_message += f"{param} is not found\n"
             continue
-        if not is_date_convertible(json[json_key]):
+        if not is_date_time_convertible(json[json_key]):
             error_message += f"{param} is not date\n"
             continue
-        json[json_key] = t.datetime.strptime(json[json_key], '%Y-%m-%d')
-
-    for param in schedule_model.Schedule.get_time_param_name():
-        json_key = convert_to_camel(param)
-        if json_key not in json:
-            error_message += f"{param} is not found\n"
-            continue
-        if not is_time_convertible(json[json_key]):
-            error_message += f"{param} is not time\n"
-            continue
-        json[json_key] = t.datetime.strptime(json[json_key], '%H:%M')
+        json[json_key] = t.datetime.strptime(json[json_key], date_time_format)
 
     if error_message != "":
         return jsonify({'status': 'NG', 'message': error_message})
 
-    check, errors = schedule_model.validate(json)
-    if not check:
-        return jsonify({'status': 'NG', 'message': errors})
-    
-    if not "id" in json:
+    if "id" not in json:
         return jsonify({'status': 'NG', 'message': "id is not found"})
 
-    uid = json['uid']
-    starting_date = json['startingDate']
-    ending_date = json['endingDate']
-    starting_time = json['startingTime']
-    ending_time = json['endingTime']
-    item = json['item']
-    spending_amount = json['spendingAmount']
-    income_amount = json['incomeAmount']
-    schedule = schedule_model.Schedule(
-        uid, starting_date, ending_date, starting_time, ending_time, item, spending_amount, income_amount)
-    schedule.id = json["id"]
+    if not isinstance(json["id"], int):
+        return jsonify({'status': 'NG', 'message': "id is not int"})
+
+    id = json["id"]
+    del json["id"]
+
+    check, errors = schedule_model.is_valid_parametor(json)
+    if not check:
+        return jsonify({'status': 'NG', 'message': errors})
+
+    schedule = schedule_model.Schedule.generate_from_json(json)
+    schedule.id = id  # type: ignore
     schedule_db.change_schedule(schedule)
     return jsonify({'status': 'OK'})
-
-
