@@ -22,20 +22,16 @@ class Schedule(Base):
     updated_at = Column(DateTime, unique=False)
 
     uid = Column(String(255), unique=False, nullable=False)
-    starting_date = Column(DateTime, unique=False)
-    ending_date = Column(DateTime, unique=False)
-    starting_time = Column(DateTime, unique=False)
-    ending_time = Column(DateTime, unique=False)
+    starting_date_time = Column(DateTime, unique=False)
+    ending_date_time = Column(DateTime, unique=False)
     item = Column(String(255), unique=False)
     spending_amount = Column(Integer, unique=False, default=0)
     income_amount = Column(Integer, unique=False, default=0)
 
-    def __init__(self, uid: str, starting_date: datetime, ending_date: datetime, starting_time: datetime, ending_time: datetime, item: str, spending_amount: int, income_amount: int):
+    def __init__(self, uid: str, starting_date_time: datetime, ending_date_time: datetime, item: str, spending_amount: int, income_amount: int):
         self.uid = uid
-        self.starting_date = starting_date
-        self.ending_date = ending_date
-        self.starting_time = starting_time
-        self.ending_time = ending_time
+        self.starting_date_time = starting_date_time
+        self.ending_date_time = ending_date_time
         self.item = item
         self.spending_amount = spending_amount
         self.income_amount = income_amount
@@ -51,18 +47,7 @@ class Schedule(Base):
             yeild name: 日付のデータのカラム名
         """
         for name in cls.__dict__:
-            if name.endswith('_date'):
-                yield name
-
-    @classmethod
-    def get_time_param_name(cls):
-        """時間のデータのカラム名の一覧を取得する
-
-        Returns:
-            yeild name: 時間のデータのカラム名
-        """
-        for name in cls.__dict__:
-            if name.endswith('_time'):
+            if name.endswith('_date_time'):
                 yield name
 
     @classmethod
@@ -110,10 +95,8 @@ def validate(params: Dict) -> Tuple[bool, dict]:
     """
     schema = {
         'uid': {'type': 'string', 'required': True, 'maxlength': 255},
-        'startingDate': {'type': 'datetime', 'required': True},
-        'endingDate': {'type': 'datetime', 'required': True},
-        'startingTime': {'type': 'datetime', 'required': True},
-        'endingTime': {'type': 'datetime', 'required': True},
+        'startingDateTime': {'type': 'datetime', 'required': True},
+        'endingDateTime': {'type': 'datetime', 'required': True},
         'item': {'type': 'string', 'required': True, 'maxlength': 255},
         'spendingAmount': {'type': 'integer', 'required': True},
         'incomeAmount': {'type': 'integer', 'required': True}
