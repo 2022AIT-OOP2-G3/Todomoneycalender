@@ -2,21 +2,19 @@ POST http://127.0.0.1:5000/schedule/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "uid" : "test",
-    "startingDate" : "2020-10-01",
-    "endingDate" : "2020-10-01",
-    "startingTime" : "10:00",
-    "endingTime" : "12:00",
-    "item": "testitem",
-    "spendingAmount" : 10000,
-    "incomeAmount" : 5000
+    "uid": "nanana",
+    "startingDateTime": "2023-01-11T00:00",
+    "endingDateTime": "2023-01-11T12:00",
+    "item": "アルバイト",
+    "spendingAmount": 10000,
+    "incomeAmount": 100
 }
 
 ###
-GET http://127.0.0.1:5000/schedule/test/2020/10 HTTP/1.1
+GET http://127.0.0.1:5000/schedule/nanana/2023/1 HTTP/1.1
 
 ###
-GET http://127.0.0.1:5000/schedule/test/2020/10/01 HTTP/1.1
+GET http://127.0.0.1:5000/schedule/nanana/2023/1/11 HTTP/1.1
 
 ###
 DELETE  http://127.0.0.1:5000/schedule/1 HTTP/1.1
@@ -25,16 +23,20 @@ DELETE  http://127.0.0.1:5000/schedule/1 HTTP/1.1
 PUT http://127.0.0.1:5000/schedule/ HTTP/1.1
 Content-Type: application/json
 
+# {
+#     "id": 1,
+#     "uid": "nanana",
+#     "startingDateTime": "2023-01-11T00:00",
+#     "endingDateTime": "2023-01-11T12:00",
+#     "item": "カラオケ",
+#     "spendingAmount": 1500,
+#     "incomeAmount": 0
+# }
 {
     "id": 1,
-    "uid" : "test",
-    "startingDate" : "2020-10-01",
-    "endingDate" : "2020-10-01",
-    "startingTime" : "10:00",
-    "endingTime" : "12:00",
-    "item": "testitem",
-    "spendingAmount" : 20000000,
-    "incomeAmount" : 3000
+    "item": "カラオケ",
+    "spendingAmount": 1500,
+    "incomeAmount": 0
 }
 
 ###
@@ -42,11 +44,11 @@ POST http://127.0.0.1:5000/payment/ HTTP/1.1
 Content-Type: application/json
 
 {
-    "uid" : "test",
-    "spendingAmount" : 10000,
-    "date" : "2020-10-01"
+    "uid" : "nanana",
+    "spendingAmount" : 100001,
+    "date" : "2023-01"
 }
 
 ###
-GET http://127.0.0.1:5000/payment/test/2020/10 HTTP/1.1
+# GET http://127.0.0.1:5000/payment/nanana/2023/01 HTTP/1.1
 

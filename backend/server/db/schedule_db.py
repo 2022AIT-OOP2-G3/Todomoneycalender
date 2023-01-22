@@ -20,7 +20,7 @@ def get_monthly_schedules(uid: str, month: t.datetime) -> List[Schedule]:
     session = get_db_session()
     schedules = session.query(Schedule).filter(
         Schedule.uid == uid,
-        func.date_format(Schedule.starting_date,
+        func.date_format(Schedule.starting_date_time,
                          '%Y-%m') == month.strftime('%Y-%m')
     ).all()
     session.close()
@@ -41,7 +41,7 @@ def get_daily_schedules(uid: str, date: t.datetime) -> List[Schedule]:
     schedules = session.query(Schedule).filter(
         Schedule.uid == uid,
         func.date_format(
-            Schedule.starting_date, '%Y-%m-%d') == date.strftime('%Y-%m-%d')
+            Schedule.starting_date_time, '%Y-%m-%d') == date.strftime('%Y-%m-%d')
     ).all()
     session.close()
     return schedules
@@ -58,7 +58,8 @@ def add_schedule(schedule: Schedule):
     session.commit()
     session.close()
 
-def delete_schedule(id:int):
+
+def delete_schedule(id: int):
     """スケジュールを削除する
 
     Args:
@@ -69,6 +70,7 @@ def delete_schedule(id:int):
     session.commit()
     session.close()
 
+
 def change_schedule(schedule):
     """スケジュールを変更する
 
@@ -76,16 +78,12 @@ def change_schedule(schedule):
     session = get_db_session()
     session.query(Schedule).filter(Schedule.id == schedule.id).update(
         {
-            'starting_date': schedule.starting_date,
-            'ending_date': schedule.ending_date,
-            'starting_time':schedule.starting_time, 
-            'ending_time': schedule.ending_time,
+            'starting_date_time': schedule.starting_date_time,
+            'ending_date_time': schedule.ending_date_time,
             'item': schedule.item,
             'spending_amount': schedule.spending_amount,
-            'income_amount':schedule.income_amount,
+            'income_amount': schedule.income_amount,
         }
     )
     session.commit()
     session.close()
-    
-

@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
-import { memo, useState, ChangeEvent, useCallback, } from "react";
+import { memo, useState, ChangeEvent, useCallback } from "react";
 
 import { FormLayout } from "../templates/FormLayout";
-import { FormButton } from "../atom/button/FormButton";
-import { PrimaryInput } from "../atom/input/PrimaryInput";
-import { useSignUpUser } from "../../hooks/firebase/auth/useSignUpUser";
-import { PrimaryParagraph } from '../atom/text/PrimaryParagraph';
+import { FormInput } from "../atoms/input/FormInput";
+import { FormButton } from "../atoms/button/FormButton";
+import { useSignUpUser } from "../../hooks/auth/useSignUpUser";
+import { PrimaryParagraph } from "../atoms/paragraph/PrimaryParagraph";
+
 
 export const SignUp = memo(() => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmationPassword, setConfirmationPassword] = useState("");
@@ -23,31 +23,41 @@ export const SignUp = memo(() => {
     setConfirmationPassword(e.target.value);
 
   const onClickSubmitForm = useCallback(() => {
-    signUp({ email: email, password: password, confirmationPassword: confirmationPassword, });
-    // setEmail(""); setPassword(""); setConfirmationPassword("");
+    signUp({
+      email: email,
+      password: password,
+      confirmationPassword: confirmationPassword,
+    });
   }, [signUp, email, password, confirmationPassword]);
 
   return (
     <FormLayout>
-      <PrimaryInput
+      <FormInput
         type="text"
         value={email}
         placeholder="email address"
         onChange={onChangeEmail}
       />
-      <PrimaryInput
+      <FormInput
         type="password"
         value={password}
         placeholder="password"
         onChange={onChangePassword}
       />
-      <PrimaryInput
+      <FormInput
         type="password"
         value={confirmationPassword}
         placeholder="confirmation password"
         onChange={onChangeConfirmationPassword}
       />
-      <FormButton onClick={onClickSubmitForm}>サインアップ</FormButton>
+      <FormButton
+        onClick={onClickSubmitForm}
+        disabled={
+          email === "" || password === "" || confirmationPassword === ""
+        }
+      >
+        サインアップ
+      </FormButton>
       <PrimaryParagraph>
         アカウントはすでにお持ちですか？<Link to="/">Sign In</Link>
       </PrimaryParagraph>
