@@ -1,5 +1,5 @@
 export interface GetDateSchedule {
-  date: string;
+  id: string;
   startingDateTime: string;
   endingDateTime: string;
   item: string;
