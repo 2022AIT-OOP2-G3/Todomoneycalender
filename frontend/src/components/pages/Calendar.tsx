@@ -1,29 +1,42 @@
 import { memo, useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import FullCalendar from "@fullcalendar/react";
-import { DateSelectArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { DateSelectArg, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 
-import { auth } from "../../hooks/firebase/firebase";
-import { useSchedules } from "../../hooks/http/get/useSchedules";
+import { useCurrentMonth } from "../../hooks/useCurrentMonth";
+import { useGetSchedule } from "../../hooks/http/get/useGetSchedule";
+import { useDeleteScheduleId } from "../../hooks/http/delete/useDeleteScheduleId";
 import { ModalSchedule } from "../organisms/modal/ModalSchedule";
 import { modalScheduleState } from "../../store/modalScheduleState";
 import { userScheduleState } from "../../store/userScheduleState";
+import { changeScheduleState } from "../../store/changeScheduleState";
 
 export const Calendar = memo(() => {
-  const navigate = useNavigate();
-  const { getSchedules, schedule } = useSchedules();
-  const setUserSchedule = useSetRecoilState(userScheduleState);
-
-  const [modalSchedule, setModalSchedule] = useRecoilState(modalScheduleState);
-
+  const [currentYear, setCurrentYear] = useState("");
+  const [currentMonth, setCurrentMonth] = useState<string>("");
   const [startingDateTime, setStartingtDateTime] = useState("");
   const [endingDateTime, setEndingDateTime] = useState("");
-  const [currentYear, setCurrentYear] = useState("");
-  const [currentMonth, setCurrentMonth] = useState("");
+
+  const [userSchedule, setUserSchedule] = useRecoilState(userScheduleState);
+  const [changeSchedule, setChangeSchedule] =
+    useRecoilState(changeScheduleState);
+  const [modalSchedule, setModalSchedule] = useRecoilState(modalScheduleState);
+
+  const { getSchedules, schedule } = useGetSchedule();
+  const { deleteSchedule } = useDeleteScheduleId();
+  const { getCurrentMonth } = useCurrentMonth();
+
+  const onClickDeleteSchedule = (info: EventClickArg) => {
+    const result = window.confirm("予定を削除しますか？");
+    if (result) {
+      setChangeSchedule({ isChange: true });
+      deleteSchedule({ id: Number(info.event._def.publicId) });
+      info.event.remove();
+    }
+  };
 
   const onClickDateTime = (selectinfo: DateSelectArg) => {
     if (!selectinfo.startStr.match(/T/)) {
@@ -37,24 +50,29 @@ export const Calendar = memo(() => {
     setModalSchedule({ isOpen: !modalSchedule.isOpen });
   };
 
-  const onClickTransitionButton = useCallback((fetchInfo: any) => {
-    setCurrentYear(fetchInfo.start.getFullYear().toString());
-    setCurrentMonth(fetchInfo.end.getMonth().toString());
-    if (fetchInfo.end.getMonth().toString() === "0") setCurrentMonth("12");
-  }, []);
+  const onClickTransitionButton = useCallback(
+    (arg: DatesSetArg) => {
+      setChangeSchedule({ isChange: true });
+      setCurrentYear(arg.start.getFullYear().toString());
+      setCurrentMonth(getCurrentMonth(arg));
+      setUserSchedule(schedule);
+    },
+    [schedule]
+  );
+
+  console.log(changeSchedule.isChange);
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (!user) {
-        navigate("/");
-      }
-    });
-    getSchedules({
-      year: currentYear,
-      month: currentMonth,
-    });
+    if (changeSchedule.isChange === true) {
+      getSchedules({
+        year: currentYear,
+        month: currentMonth,
+      });
+      setChangeSchedule({ isChange: false });
+    }
+
     if (schedule !== null) setUserSchedule(schedule);
-  }, [currentYear, currentMonth]);
+  }, [currentYear, currentMonth, changeSchedule, schedule]);
 
   return (
     <>
@@ -68,15 +86,20 @@ export const Calendar = memo(() => {
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         locale="ja"
-        slotDuration="00:30:00"
+        slotDuration="00:15:00"
         headerToolbar={{
           left: "prev,next today",
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
-        events={(fetchInfo: any) => {
-          onClickTransitionButton(fetchInfo);
-        }}
+        datesSet={onClickTransitionButton}
+        events={userSchedule?.schedule.map((event) => ({
+          id: event.id,
+          title: event.item,
+          start: event.startingDateTime,
+          end: event.endingDateTime,
+        }))}
+        eventClick={(info: EventClickArg) => onClickDeleteSchedule(info)}
         businessHours={{
           daysOfWeek: [1, 2, 3, 4, 5],
           startTime: "0:00",
@@ -88,9 +111,6 @@ export const Calendar = memo(() => {
         }}
         initialView="dayGridMonth"
         weekends={true}
-        // events={[
-        //   { title: "正月", start: "2023-01-01 12:00", end: "2023-01-05T01:00" },
-        // ]}
         selectable={true}
         select={(selectinfo) => {
           onClickDateTime(selectinfo);

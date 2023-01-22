@@ -10,7 +10,7 @@ export const useDeleteScheduleId = () => {
     const { id } = props;
 
     axios
-      .delete(`http://localhost:5000/schedule/${id}`, {
+      .delete(`http://127.0.0.1:5000/schedule/${id}`, {
         data: id,
       })
       .then(() => alert("削除しました"))
