@@ -8,26 +8,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { auth } from "../../hooks/firebase/firebase";
-<<<<<<< HEAD
-import { useNavigate, useLocation, } from "react-router-dom";
-import FullCalendar from '@fullcalendar/react' // must go before plugins
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
-
-export const Calendar = memo(() => {
-  const navigate = useNavigate()
-  const pathname = useLocation().pathname;
-  auth.onAuthStateChanged((user) => {
-    if (!user) {
-      navigate("/");
-    } else if (pathname !== "/"+ user.uid +"calender") {
-        navigate("/");
-    } else {
-      console.log(user?.uid)
-    }
-  });
-=======
 import { useSchedules } from "../../hooks/http/get/useSchedules";
 import { ModalSchedule } from "../organisms/modal/ModalSchedule";
 import { modalScheduleState } from "../../store/modalScheduleState";
@@ -75,7 +55,6 @@ export const Calendar = memo(() => {
     });
     if (schedule !== null) setUserSchedule(schedule);
   }, [currentYear, currentMonth]);
->>>>>>> origin
 
   return (
     <>
