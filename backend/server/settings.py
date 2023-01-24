@@ -5,6 +5,11 @@ from sqlalchemy.engine.create import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+# 2023-01-11T00:00
+date_time_format = '%Y-%m-%dT%H:%M'
+date_format = '%Y-%m-%d'
+manth_format = '%Y-%m'
+
 # read dev.env file
 load_dotenv(dotenv_path="../.env.dev")
 
