@@ -20,9 +20,9 @@ export const SideBarContent: FC = () => {
       {modalMoney.isOpen ? <ModalMoney /> : null}
 
       <SUl>
-        <p>今月の予算：{userSchedule?.spendingAmount}円</p>
-        <p>今月の支出：{userSchedule?.usingAmount}円</p>
-        <p>今月の収入：{userSchedule?.incomeAmount}円</p>
+        <p>この月の予算：{userSchedule?.spendingAmount}円</p>
+        <p>この月の支出：{userSchedule?.usingAmount}円</p>
+        <p>この月の収入：{userSchedule?.incomeAmount}円</p>
         <SLi onClick={onClickOpenModal}>
           <FiPlus /> 今月の予算を入力
         </SLi>
@@ -32,6 +32,7 @@ export const SideBarContent: FC = () => {
 };
 
 const SUl = styled.ul`
+ 
   height: 100vh;
   width: 200px;
   line-height: 40px;
@@ -42,6 +43,7 @@ const SUl = styled.ul`
 `;
 
 const SLi = styled.li`
+position: sticky;
   list-style: none;
   color: gray;
   cursor: pointer;
