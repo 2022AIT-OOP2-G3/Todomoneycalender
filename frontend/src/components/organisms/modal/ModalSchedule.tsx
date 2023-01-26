@@ -1,14 +1,15 @@
-import styled from "styled-components";
 import { FC, useState, ChangeEvent, useCallback, useEffect } from "react";
+import styled from "styled-components";
 import { FiXCircle } from "react-icons/fi";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
-import { useRecoilState } from "recoil";
 import { ModalLayout } from "../../templates/ModalLayOut";
 import { ModalInput } from "../../atoms/input/ModalInput";
 import { FormButton } from "../../atoms/button/FormButton";
 import { CloseButton } from "../../atoms/button/CloseButton";
-import { useScheduleData } from "../../../hooks/http/post/useScheduleData";
+import { usePostSchedule } from "../../../hooks/http/post/usePostSchedule";
 import { modalScheduleState } from "../../../store/modalScheduleState";
+import { changeScheduleState } from "../../../store/changeScheduleState";
 
 type Props = {
   start: string;
@@ -18,15 +19,16 @@ type Props = {
 export const ModalSchedule: FC<Props> = (props) => {
   const { start, end } = props;
 
-  const { postScheduleData } = useScheduleData();
-
-  const [modalSchedule, setModalSchedule] = useRecoilState(modalScheduleState);
-
   const [startingDateTime, setStartingDateTime] = useState("");
   const [endingDateTime, setEndingDateTime] = useState("");
   const [item, setItem] = useState("");
   const [spendingAmount, setSpendingAmount] = useState("");
   const [incomeAmount, setIncomeAmount] = useState("");
+
+  const setChangeSchedule = useSetRecoilState(changeScheduleState);
+  const [modalSchedule, setModalSchedule] = useRecoilState(modalScheduleState);
+
+  const { postScheduleData } = usePostSchedule();
 
   const onChangeStartingTime = (e: ChangeEvent<HTMLInputElement>) =>
     setStartingDateTime(e.target.value);
@@ -57,9 +59,11 @@ export const ModalSchedule: FC<Props> = (props) => {
       incomeAmount: Number(incomeAmount),
     });
     setModalSchedule({ isOpen: false });
+    setChangeSchedule({ isChange: true });
   }, [
     postScheduleData,
     setModalSchedule,
+    setChangeSchedule,
     startingDateTime,
     endingDateTime,
     item,

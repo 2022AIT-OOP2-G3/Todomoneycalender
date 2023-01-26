@@ -1,21 +1,25 @@
 import { FC, useState, ChangeEvent, useCallback, memo } from "react";
 import styled from "styled-components";
-import { useRecoilState } from "recoil";
 import { FiXCircle } from "react-icons/fi";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { ModalLayout } from "../../templates/ModalLayOut";
 import { ModalInput } from "../../atoms/input/ModalInput";
 import { FormButton } from "../../atoms/button/FormButton";
 import { CloseButton } from "../../atoms/button/CloseButton";
-import { useMoneyData } from "../../../hooks/http/post/useMoneyData";
 import { modalMoneyState } from "../../../store/modalMoneyState";
+import { userScheduleState } from "../../../store/userScheduleState";
+import { changeScheduleState } from "../../../store/changeScheduleState";
+import { usePostSpendingAmount } from "../../../hooks/http/post/usePostSpendingAmount";
 
 export const ModalMoney: FC = memo(() => {
+  const [spendingAmount, setSpendingAmount] = useState("");
+
+  const userSchedule = useRecoilValue(userScheduleState);
+  const setChangeSchedule = useSetRecoilState(changeScheduleState);
   const [modalMoney, setModalMoney] = useRecoilState(modalMoneyState);
 
-  const { postMoneyData } = useMoneyData();
-
-  const [spendingAmount, setSpendingAmount] = useState("");
+  const { postSpendingAmount } = usePostSpendingAmount();
 
   const onChangeSpendingAmount = (e: ChangeEvent<HTMLInputElement>) =>
     setSpendingAmount(e.target.value);
@@ -25,11 +29,20 @@ export const ModalMoney: FC = memo(() => {
   }, [setModalMoney, modalMoney]);
 
   const onClickPostData = useCallback(() => {
-    postMoneyData({
+    postSpendingAmount({
       spendingAmount: Number(spendingAmount),
+      date: userSchedule?.date,
     });
     setModalMoney({ isOpen: !modalMoney.isOpen });
-  }, [postMoneyData, setModalMoney, modalMoney, spendingAmount]);
+    setChangeSchedule({ isChange: true });
+  }, [
+    postSpendingAmount,
+    setModalMoney,
+    setChangeSchedule,
+    modalMoney,
+    spendingAmount,
+    userSchedule,
+  ]);
 
   return (
     <ModalLayout>
