@@ -32,7 +32,6 @@ export const SideBarContent: FC = () => {
 };
 
 const SUl = styled.ul`
- 
   height: 100vh;
   width: 200px;
   line-height: 40px;
@@ -43,7 +42,7 @@ const SUl = styled.ul`
 `;
 
 const SLi = styled.li`
-position: sticky;
+  position: sticky;
   list-style: none;
   color: gray;
   cursor: pointer;

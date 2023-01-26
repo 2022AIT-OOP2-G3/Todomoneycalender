@@ -1,4 +1,5 @@
 import { memo, useState, useEffect, useCallback } from "react";
+import { Tooltip } from "bootstrap";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
@@ -15,11 +16,12 @@ import { ModalSchedule } from "../organisms/modal/ModalSchedule";
 import { modalScheduleState } from "../../store/modalScheduleState";
 import { userScheduleState } from "../../store/userScheduleState";
 import { changeScheduleState } from "../../store/changeScheduleState";
+import { EventHoveringArg } from "@fullcalendar/core";
 
 export const Calendar = memo(() => {
   const navigate = useNavigate();
   const [currentYear, setCurrentYear] = useState("");
-  const [currentMonth, setCurrentMonth] = useState<string>("");
+  const [currentMonth, setCurrentMonth] = useState("");
   const [startingDateTime, setStartingtDateTime] = useState("");
   const [endingDateTime, setEndingDateTime] = useState("");
 
@@ -32,12 +34,14 @@ export const Calendar = memo(() => {
   const { deleteSchedule } = useDeleteScheduleId();
   const { getCurrentMonth } = useCurrentMonth();
 
-  const onClickDeleteSchedule = (info: EventClickArg) => {
+  let tooltipInstance: any = null;
+
+  const onClickDeleteSchedule = (eventClickinfo: EventClickArg) => {
     const result = window.confirm("予定を削除しますか？");
     if (result) {
       setChangeSchedule({ isChange: true });
-      deleteSchedule({ id: Number(info.event._def.publicId) });
-      info.event.remove();
+      deleteSchedule({ id: Number(eventClickinfo.event._def.publicId) });
+      eventClickinfo.event.remove();
     }
   };
 
@@ -49,7 +53,6 @@ export const Calendar = memo(() => {
       setStartingtDateTime(selectinfo.startStr.replace(":00+09:00", ""));
       setEndingDateTime(selectinfo.endStr.replace(":00+09:00", ""));
     }
-
     setModalSchedule({ isOpen: !modalSchedule.isOpen });
   };
 
@@ -62,6 +65,27 @@ export const Calendar = memo(() => {
     },
     [schedule]
   );
+
+  const onMouseEnter = (eventMouseEnterInfo: EventHoveringArg) => {
+    if (eventMouseEnterInfo.event.extendedProps.description) {
+      tooltipInstance = new Tooltip(eventMouseEnterInfo.el, {
+        title: eventMouseEnterInfo.event.extendedProps.description,
+        html: true,
+        placement: "top",
+        delay: { show: 1000, hide: 400 },
+        trigger: "hover",
+        container: "body",
+      });
+      tooltipInstance.show();
+    }
+  };
+
+  const onMouseLeave = () => {
+    if (tooltipInstance) {
+      tooltipInstance.dispose();
+      tooltipInstance = null;
+    }
+  };
 
   console.log(changeSchedule.isChange);
 
@@ -78,7 +102,6 @@ export const Calendar = memo(() => {
       });
       setChangeSchedule({ isChange: false });
     }
-
     if (schedule !== null) setUserSchedule(schedule);
   }, [currentYear, currentMonth, changeSchedule, schedule]);
 
@@ -100,14 +123,18 @@ export const Calendar = memo(() => {
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
-        datesSet={onClickTransitionButton}
+        select={onClickDateTime}
         events={userSchedule?.schedule.map((event) => ({
           id: event.id,
+          description: `支出: ${event.spendingAmount}`,
           title: event.item,
           start: event.startingDateTime,
           end: event.endingDateTime,
         }))}
-        eventClick={(info: EventClickArg) => onClickDeleteSchedule(info)}
+        eventClick={onClickDeleteSchedule}
+        eventMouseEnter={onMouseEnter}
+        eventMouseLeave={onMouseLeave}
+        datesSet={onClickTransitionButton}
         businessHours={{
           daysOfWeek: [1, 2, 3, 4, 5],
           startTime: "0:00",
@@ -120,9 +147,6 @@ export const Calendar = memo(() => {
         initialView="dayGridMonth"
         weekends={true}
         selectable={true}
-        select={(selectinfo) => {
-          onClickDateTime(selectinfo);
-        }}
       />
     </>
   );
