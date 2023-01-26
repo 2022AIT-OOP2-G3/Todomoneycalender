@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import axios from "axios";
-import { auth } from "../../auth/firebase/firebase";
+import { auth } from "../../firebase/firebase";
 
 interface Props {
   startingDateTime: string;

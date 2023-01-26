@@ -4,7 +4,7 @@ import { memo, useState, ChangeEvent, useCallback } from "react";
 import { FormLayout } from "../templates/FormLayout";
 import { FormInput } from "../atoms/input/FormInput";
 import { FormButton } from "../atoms/button/FormButton";
-import { useSignUpUser } from "../../hooks/auth/useSignUpUser";
+import { useSignUpUser } from "../../hooks/firebase/auth/useSignUpUser";
 import { PrimaryParagraph } from "../atoms/paragraph/PrimaryParagraph";
 
 
