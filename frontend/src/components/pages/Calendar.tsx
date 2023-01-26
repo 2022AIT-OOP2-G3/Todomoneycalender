@@ -1,11 +1,13 @@
 import { memo, useState, useEffect, useCallback } from "react";
 import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { DateSelectArg, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 
+import { auth } from "../../hooks/firebase/firebase";
 import { useCurrentMonth } from "../../hooks/useCurrentMonth";
 import { useGetSchedule } from "../../hooks/http/get/useGetSchedule";
 import { useDeleteScheduleId } from "../../hooks/http/delete/useDeleteScheduleId";
@@ -15,6 +17,7 @@ import { userScheduleState } from "../../store/userScheduleState";
 import { changeScheduleState } from "../../store/changeScheduleState";
 
 export const Calendar = memo(() => {
+  const navigate = useNavigate();
   const [currentYear, setCurrentYear] = useState("");
   const [currentMonth, setCurrentMonth] = useState<string>("");
   const [startingDateTime, setStartingtDateTime] = useState("");
@@ -63,6 +66,11 @@ export const Calendar = memo(() => {
   console.log(changeSchedule.isChange);
 
   useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        navigate("/");
+      }
+    });
     if (changeSchedule.isChange === true) {
       getSchedules({
         year: currentYear,
