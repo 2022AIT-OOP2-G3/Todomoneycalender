@@ -1,25 +1,23 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
-import { Schedule } from "../../types/shedule/shudele";
+import { GetSchedule } from "../../types/http/get/getShudele";
 
 const { persistAtom } = recoilPersist({
   key: "recoil-persist",
   storage: sessionStorage,
 });
 
-export const userScheduleState = atom<Schedule | null>({
+export const userScheduleState = atom<GetSchedule | null>({
   key: "userScheduleState",
   default: {
     date: "0",
     incomeAmount: 0,
     schedule: [
       {
-        date: "",
-        startingDate: "",
-        endingDate: "",
-        startingTime: "",
-        endingTime: "",
+        id: "",
+        startingDateTime: "",
+        endingDateTime: "",
         item: "",
         spendingAmount: 0,
       },

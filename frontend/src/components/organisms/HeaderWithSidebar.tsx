@@ -1,6 +1,6 @@
 import { memo, useState, FC } from "react";
-import { FiMenu } from "react-icons/fi";
 import styled from "styled-components";
+import { FiMenu } from "react-icons/fi";
 
 import { IconButton } from "../atoms/button/IconButton";
 import { SideBarContent } from "../molecules/sidebar/SideBarContent";
