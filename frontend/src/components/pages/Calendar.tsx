@@ -1,5 +1,5 @@
 import { memo, useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import { DateSelectArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -15,6 +15,7 @@ import { userScheduleState } from "../../store/userScheduleState";
 
 export const Calendar = memo(() => {
   const navigate = useNavigate();
+  const pathname = useLocation().pathname;
   const { getSchedules, schedule } = useSchedules();
   const setUserSchedule = useSetRecoilState(userScheduleState);
 
@@ -47,6 +48,10 @@ export const Calendar = memo(() => {
     auth.onAuthStateChanged((user) => {
       if (!user) {
         navigate("/");
+      } else if (pathname !== "/" + user.uid + "/calender") {
+        navigate("/");
+      } else {
+        console.log(user?.uid + " is accessing")
       }
     });
     getSchedules({
@@ -54,7 +59,7 @@ export const Calendar = memo(() => {
       month: currentMonth,
     });
     if (schedule !== null) setUserSchedule(schedule);
-  }, [currentYear, currentMonth]);
+  }, [currentYear, currentMonth, getSchedules, schedule, setUserSchedule, pathname, navigate]);
 
   return (
     <>
