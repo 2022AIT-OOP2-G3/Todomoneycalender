@@ -1,21 +1,26 @@
-import { signOut, } from "firebase/auth";
-import { auth, } from "../firebase"
-import { useNavigate, } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 
-export const LogOut = () => {
-    const navigate = useNavigate()
+export const useSignOutUser = () => {
+  const navigate = useNavigate();
+
+  const logOut = useCallback(() => {
     const result = window.confirm("サインアウトしますか？");
     if (!result) {
-        console.log("signOut cancel")
-        return;
+      console.log("signOut cancel");
+      return;
     }
     signOut(auth)
-        .then(() => {
-            console.log("User SignOut")
-            navigate("/");
-        })
-        .catch((error) => {
-            alert("ログアウトできませんでした。時間をおいてもう一度試してください");
-            console.error(error);
-        })
-}
+      .then(() => {
+        console.log("User SignOut");
+        navigate("/");
+      })
+      .catch((error) => {
+        alert("ログアウトできませんでした。時間をおいてもう一度試してください");
+        console.error(error);
+      });
+  }, [navigate]);
+  return { logOut };
+};
