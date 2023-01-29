@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 
-import { auth } from "../../firebase/firebase"; 
+import { auth } from "../../firebase/firebase";
 import { GetSchedule } from "../../../../types/http/get/getShudele"; 
 
 interface Props {

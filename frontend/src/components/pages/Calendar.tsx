@@ -1,7 +1,7 @@
 import { memo, useState, useEffect, useCallback } from "react";
 import { Tooltip } from "bootstrap";
 import { useRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -20,6 +20,7 @@ import { EventHoveringArg } from "@fullcalendar/core";
 
 export const Calendar = memo(() => {
   const navigate = useNavigate();
+  const pathname = useLocation().pathname;
   const [currentYear, setCurrentYear] = useState("");
   const [currentMonth, setCurrentMonth] = useState("");
   const [startingDateTime, setStartingtDateTime] = useState("");
@@ -63,7 +64,7 @@ export const Calendar = memo(() => {
       setCurrentMonth(getCurrentMonth(arg));
       setUserSchedule(schedule);
     },
-    [schedule]
+    [getCurrentMonth, schedule, setChangeSchedule, setUserSchedule]
   );
 
   const onMouseEnter = (eventMouseEnterInfo: EventHoveringArg) => {
@@ -93,6 +94,10 @@ export const Calendar = memo(() => {
     auth.onAuthStateChanged((user) => {
       if (!user) {
         navigate("/");
+      } else if (pathname !== "/" + user.uid + "/calender") {
+        navigate("/");
+      } else {
+        console.log(user?.uid + " is accessing")
       }
     });
     if (changeSchedule.isChange === true) {
@@ -103,7 +108,7 @@ export const Calendar = memo(() => {
       setChangeSchedule({ isChange: false });
     }
     if (schedule !== null) setUserSchedule(schedule);
-  }, [currentYear, currentMonth, changeSchedule, schedule]);
+  }, [currentYear, currentMonth, changeSchedule, schedule, setUserSchedule, pathname, navigate, getSchedules, setChangeSchedule]);
 
   return (
     <>

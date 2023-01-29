@@ -17,8 +17,7 @@ export const useSignInUser = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((user) => {
         console.log('ログイン成功=', user.user.uid)
-        const uid = auth.currentUser?.uid
-        navigate('/' + uid + '/calender/')
+        navigate('/' + user.user.uid + '/calender')
       })
       .catch((error) => {
         switch (error.code) {
