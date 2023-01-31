@@ -40,7 +40,6 @@ def add_payment(payment: Payment):
         Payment.date == payment.date
     ).all()
 
-    print(payments)
     if payments != []:
         cng = session.query(Payment).filter(
             Payment.uid == payment.uid,
