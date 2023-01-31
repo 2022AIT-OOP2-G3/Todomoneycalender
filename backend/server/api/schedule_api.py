@@ -1,18 +1,23 @@
 import datetime as t
 from typing import cast
 
-from flask import Blueprint, jsonify, request
-
-from settings import date_time_format, manth_format
-import db.schedule_db as schedule_db
 import db.payment_db as payment_db
+import db.schedule_db as schedule_db
 import model.schedule_model as schedule_model
-from utility.is_date_convertible import (
-    is_date_time_convertible, is_date_convertible, is_manth_convertible)
-
+from flask import Blueprint, jsonify, request
+from settings import date_time_format, manth_format
 from utility.convert_json_key import convert_to_camel
+from utility.is_date_convertible import (is_date_convertible,
+                                         is_date_time_convertible,
+                                         is_manth_convertible)
 
 schedule_module = Blueprint('schedule', __name__, url_prefix='/schedule')
+
+
+def debug_print(*args, **kwargs):
+    def _debug_print(*args, **kwargs):
+        print(*args, **kwargs)
+    return _debug_print
 
 
 @schedule_module.route('/', methods=['POST'])

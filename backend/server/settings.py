@@ -1,9 +1,28 @@
+import logging
 import os
+from logging.config import dictConfig
 
+import flask
 from dotenv import load_dotenv
+from flask import Flask, has_request_context, request
+from flask.logging import default_handler
+from flask_cors import CORS
 from sqlalchemy.engine.create import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+
+"""
+サーバーの設定
+"""
+
+app = flask.Flask(__name__)
+CORS(app)
+app.config['JSON_SORT_KEYS'] = False
+app.config['JSON_AS_ASCII'] = False
+
+"""
+データベースの設定
+"""
 
 # 2023-01-11T00:00
 date_time_format = '%Y-%m-%dT%H:%M'
