@@ -23,6 +23,7 @@ export const usePostSchedule = () => {
     } = props;
 
     const uid = auth.currentUser?.uid;
+    const userToken = auth.currentUser?.getIdToken;
 
     if (uid === null) {
       alert("登録に失敗しました");
@@ -37,6 +38,7 @@ export const usePostSchedule = () => {
         item: item,
         spendingAmount: spendingAmount,
         incomeAmount: incomeAmount,
+        headers: { Authorization: "JWT " + userToken}
       })
       .then(() => alert("登録完了しました"))
       .catch(() => alert("登録に失敗しました"));

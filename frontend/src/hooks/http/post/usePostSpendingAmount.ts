@@ -13,6 +13,7 @@ export const usePostSpendingAmount = () => {
   const postSpendingAmount = useCallback((props: Props) => {
     const { spendingAmount, date } = props;
     const uid = auth.currentUser?.uid;
+    const userToken = auth.currentUser?.getIdToken;
 
     if (uid === null) {
       alert("登録に失敗しました");
@@ -24,6 +25,7 @@ export const usePostSpendingAmount = () => {
         uid: uid,
         spendingAmount: spendingAmount,
         date: date,
+        headers: { Authorization: "JWT " + userToken}
       })
       .then(() => alert("登録完了しました"))
       .catch(() => alert("登録に失敗しました"));
