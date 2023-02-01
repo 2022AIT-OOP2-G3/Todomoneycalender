@@ -18,7 +18,7 @@ export const usePostSpendingAmount = () => {
       alert("登録に失敗しました");
       return;
     }
-    const userToken = localStorage.getItem('token');
+    const userToken = sessionStorage.getItem('token');
 
     if (userToken) {
       axios
