@@ -10,6 +10,17 @@ from flask_cors import CORS
 from sqlalchemy.engine.create import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+from firebase_admin import initialize_app, credentials
+
+from typing import cast
+
+"""
+firebaseの設定
+"""
+
+path = os.path.join(os.path.dirname(__file__), '../firebase.json')
+cred = credentials.Certificate(path)
+initialize_app(cred)
 
 """
 サーバーの設定
@@ -19,6 +30,7 @@ app = flask.Flask(__name__)
 CORS(app)
 app.config['JSON_SORT_KEYS'] = False
 app.config['JSON_AS_ASCII'] = False
+app.config['ENABLE_AUTH'] = False
 
 """
 データベースの設定
@@ -55,7 +67,7 @@ base.query = session.query_property()
 
 
 def get_db_session() -> scoped_session:
-    return session()
+    return session()  # type: ignore
 
 
 def get_db_engine():
