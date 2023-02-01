@@ -43,6 +43,8 @@ export const Calendar = memo(() => {
       setChangeSchedule({ isChange: true });
       deleteSchedule({ id: Number(eventClickinfo.event._def.publicId) });
       eventClickinfo.event.remove();
+      tooltipInstance.dispose();
+      tooltipInstance = null;
     }
   };
 
@@ -97,7 +99,7 @@ export const Calendar = memo(() => {
       } else if (pathname !== "/" + user.uid + "/calender") {
         navigate("/");
       } else {
-        console.log(user?.uid + " is accessing")
+        console.log(user?.uid + " is accessing");
       }
     });
     if (changeSchedule.isChange === true) {
@@ -108,7 +110,17 @@ export const Calendar = memo(() => {
       setChangeSchedule({ isChange: false });
     }
     if (schedule !== null) setUserSchedule(schedule);
-  }, [currentYear, currentMonth, changeSchedule, schedule, setUserSchedule, pathname, navigate, getSchedules, setChangeSchedule]);
+  }, [
+    currentYear,
+    currentMonth,
+    changeSchedule,
+    schedule,
+    setUserSchedule,
+    pathname,
+    navigate,
+    getSchedules,
+    setChangeSchedule,
+  ]);
 
   return (
     <>
