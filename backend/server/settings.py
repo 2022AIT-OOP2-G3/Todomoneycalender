@@ -15,14 +15,6 @@ from firebase_admin import initialize_app, credentials
 from typing import cast
 
 """
-firebaseの設定
-"""
-
-path = os.path.join(os.path.dirname(__file__), '../firebase.json')
-cred = credentials.Certificate(path)
-initialize_app(cred)
-
-"""
 サーバーの設定
 """
 
@@ -30,7 +22,19 @@ app = flask.Flask(__name__)
 CORS(app)
 app.config['JSON_SORT_KEYS'] = False
 app.config['JSON_AS_ASCII'] = False
-app.config['ENABLE_AUTH'] = False
+app.config['ENABLE_AUTH'] = True
+
+"""
+firebaseの設定
+"""
+
+path = os.path.join(os.path.dirname(__file__), '../firebase.json')
+if os.path.exists(path):
+    cred = credentials.Certificate(path)
+    initialize_app(cred)
+else:
+    print("firebase.json is not found")
+    app.config['ENABLE_AUTH'] = False
 
 """
 データベースの設定
