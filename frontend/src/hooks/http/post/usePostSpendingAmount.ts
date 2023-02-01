@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import axios from "axios";
 
-import { auth } from "../../firebase/firebase"; 
+import { auth } from "../../firebase/firebase";
 import { PostSpendingAmount } from "../../../../types/http/post/postSpendingAmount";
 
 interface Props {
@@ -13,22 +13,28 @@ export const usePostSpendingAmount = () => {
   const postSpendingAmount = useCallback((props: Props) => {
     const { spendingAmount, date } = props;
     const uid = auth.currentUser?.uid;
-    const userToken = auth.currentUser?.getIdToken;
 
     if (uid === null) {
       alert("登録に失敗しました");
       return;
     }
 
-    axios
-      .post<PostSpendingAmount>("http://127.0.0.1:5000/payment/", {
-        uid: uid,
-        spendingAmount: spendingAmount,
-        date: date,
-        headers: { Authorization: "JWT " + userToken}
+    auth.currentUser?.getIdToken()
+      .then(userToken => {
+        console.log("トークンを取得");
+        axios
+          .post<PostSpendingAmount>("http://127.0.0.1:5000/payment/", {
+            uid: uid,
+            spendingAmount: spendingAmount,
+            date: date,
+            headers: { Authorization: "JWT " + userToken }
+          })
+          .then(() => alert("登録完了しました"))
+          .catch(() => alert("登録に失敗しました"));
       })
-      .then(() => alert("登録完了しました"))
-      .catch(() => alert("登録に失敗しました"));
+      .catch(e => {
+        console.log(e);
+      })
   }, []);
   return { postSpendingAmount };
 };
