@@ -12,23 +12,27 @@ interface Props {
 export const useGetSchedule = () => {
   const [schedule, setSchedules] = useState<GetSchedule | null>(null);
 
-  const getSchedules = useCallback((props: Props) => {
+  const getSchedules = useCallback(async (props: Props) => {
     const { year, month } = props;
     const uid = auth.currentUser?.uid;
 
     auth.currentUser?.getIdToken()
-      .then(userToken => {
-        console.log("トークンの取得")
-        axios
-          .get<GetSchedule>(`http://127.0.0.1:5000/schedule/${uid}/${year}/${month}`, { headers: { Authorization: "JWT " + userToken } })
-          .then((res) => setSchedules(res.data))
-          .catch(() => {
-            // alert("スケジュール情報の取得に失敗しました");
-          });
+      .then(token => {
+        localStorage.setItem('token', token)
       })
       .catch(e => {
         console.log(e)
       })
+    const userToken = localStorage.getItem('token');
+    if (userToken) {
+      try {
+        const response = await axios.get<GetSchedule>(`http://127.0.0.1:5000/schedule/${uid}/${year}/${month}`, { headers: { Authorization: "JWT " + userToken } })
+        setSchedules(response.data)
+      }
+      catch (e) {
+        console.log("エラーが発生しました。axios.getで")
+      }
+    }
   }, []);
   return { getSchedules, schedule };
 };
