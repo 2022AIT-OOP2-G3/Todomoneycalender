@@ -23,19 +23,20 @@ class Payment(Base):
     spending_amount = Column(Integer, unique=False, default=0)
     date = Column(DateTime, unique=False)
 
-    def __init__(self, uid: str,date: datetime, spending_amount: int):
+    def __init__(self, uid: str, date: datetime, spending_amount: int):
         self.uid = uid
         self.spending_amount = spending_amount
         self.date = date
 
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
-        
+
     @classmethod
     def get_date_param_name(cls):
         for name in cls.__dict__:
             if name.endswith('date'):
                 yield name
+
 
 def validate(params) -> Tuple[bool, dict]:
     schema = {

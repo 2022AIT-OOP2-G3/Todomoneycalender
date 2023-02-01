@@ -10,9 +10,7 @@ export const FormLayout: FC<Props> = memo((props) => {
 
   return (
     <LoginPage>
-      <Form>
-        <form>{children}</form>
-      </Form>
+      <Form>{children}</Form>
     </LoginPage>
   );
 });

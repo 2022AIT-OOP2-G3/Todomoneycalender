@@ -23,21 +23,19 @@ def post_payment():
     if not request.is_json:
         return jsonify({'status': 'NG', 'message': "deta is not json"})
     json: dict = cast(dict, request.get_json())
-    
+
     error_message: str = ""
-    for param in payment_model.Payment.get_date_param_name():
-        json_key = convert_to_camel(param)
-        if json_key not in json:
-            error_message += f"{param} is not found\n"
-            continue
-        if not is_date_convertible(json[json_key]):
-            error_message += f"{param} is not date\n"
-            continue
-        json[json_key] = t.datetime.strptime(json[json_key], '%Y-%m-%d')
-    
+    if "date" not in json:
+        error_message += "date is not found"
+    else:
+        if not is_date_convertible(json["date"] + "-01"):
+            error_message += "date is not date"
+
+    json["date"] = t.datetime.strptime(json["date"], '%Y-%m')
+
     if error_message != "":
         return jsonify({'status': 'NG', 'message': error_message})
-    
+
     check, errors = payment_model.validate(json)
     if not check:
         return jsonify({'status': 'NG', 'message': errors})
@@ -46,9 +44,9 @@ def post_payment():
     spending_amount = json['spendingAmount']
     date = json['date']
     payment = payment_model.Payment(
-        uid,date,spending_amount)
-    
-    payment_db.add_Payment(payment)
+        uid, date, spending_amount)
+
+    payment_db.add_payment(payment)
     return jsonify({'status': 'OK'})
 
 
@@ -62,26 +60,19 @@ def get_monthly_payments(uid: str, year: int, month: int):
         month (int): 月
 
     Returns:
-        List[Payment]: 支出のリスト
+        'spendingAmount'
+        'date'
     """
     if not is_date_convertible(f'{year}-{month}-01'):
         return jsonify({'status': 'NG', 'message': 'date is not date'})
     datatime = t.datetime(year, month, 1)
-    payments = payment_db.get_monthly_payments(uid, datatime)
-
-    total_spending_amount = sum(
-        map(lambda payment: payment.spending_amount, payments)
-    )
+    payment = payment_db.get_monthly_payment(uid, datatime)
+    if payment is None:
+        return jsonify({'status': 'NG', 'message': 'payment is not found'})
 
     result = {
         'date': t.datetime.strftime(datatime, '%Y-%m'),
-        'spendingAmount': total_spending_amount,
-        'payment': list(map(lambda payment:
-                        {
-                            'spendingAmount': payment.spending_amount,
-                        },
-            payments
-        ))
+        'spendingAmount': payment.spending_amount
     }
 
     return jsonify(result)

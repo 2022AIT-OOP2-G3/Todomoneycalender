@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import Dict, Tuple
+from utility.convert_json_key import convert_to_camel, convert_to_snake
+import inspect
 
 from cerberus import Validator
 from sqlalchemy import Column, DateTime, Integer, String, func
@@ -20,20 +22,16 @@ class Schedule(Base):
     updated_at = Column(DateTime, unique=False)
 
     uid = Column(String(255), unique=False, nullable=False)
-    starting_date = Column(DateTime, unique=False)
-    ending_date = Column(DateTime, unique=False)
-    starting_time = Column(DateTime, unique=False)
-    ending_time = Column(DateTime, unique=False)
+    starting_date_time = Column(DateTime, unique=False)
+    ending_date_time = Column(DateTime, unique=False)
     item = Column(String(255), unique=False)
     spending_amount = Column(Integer, unique=False, default=0)
     income_amount = Column(Integer, unique=False, default=0)
 
-    def __init__(self, uid: str, starting_date: datetime, ending_date: datetime, starting_time: datetime, ending_time: datetime, item: str, spending_amount: int, income_amount: int):
+    def __init__(self, uid: str, starting_date_time: datetime, ending_date_time: datetime, item: str, spending_amount: int, income_amount: int):
         self.uid = uid
-        self.starting_date = starting_date
-        self.ending_date = ending_date
-        self.starting_time = starting_time
-        self.ending_time = ending_time
+        self.starting_date_time = starting_date_time
+        self.ending_date_time = ending_date_time
         self.item = item
         self.spending_amount = spending_amount
         self.income_amount = income_amount
@@ -49,19 +47,43 @@ class Schedule(Base):
             yeild name: 日付のデータのカラム名
         """
         for name in cls.__dict__:
-            if name.endswith('_date'):
+            if name.endswith('_date_time'):
                 yield name
 
     @classmethod
-    def get_time_param_name(cls):
-        """時間のデータのカラム名の一覧を取得する
+    def get_param_name(cls):
+        """カラム名の一覧を取得する
 
         Returns:
-            yeild name: 時間のデータのカラム名
+            yeild name: カラム名
         """
+        aneditable_param = ['id', 'created_at', 'updated_at']
+        method_list = list(map(
+            lambda x: x[0], inspect.getmembers(cls, inspect.ismethod)))
         for name in cls.__dict__:
-            if name.endswith('_time'):
-                yield name
+            if name.startswith('_') or name in aneditable_param or name in method_list:
+                continue
+            yield name
+
+    @classmethod
+    def generate_from_json(cls, params: Dict):
+        """JSONからデータを生成する
+
+        Args:
+            params (Dict): JSONのデータ
+
+        Returns:
+            Schedule: 生成したデータ
+        """
+        for name in cls.get_param_name():
+            json_name = convert_to_camel(name)
+            if json_name not in params:
+                params[name] = None
+            else:
+                value = params[json_name]
+                del params[json_name]
+                params[name] = value
+        return cls(**params)
 
 
 def validate(params: Dict) -> Tuple[bool, dict]:
@@ -73,16 +95,30 @@ def validate(params: Dict) -> Tuple[bool, dict]:
     """
     schema = {
         'uid': {'type': 'string', 'required': True, 'maxlength': 255},
-        'startingDate': {'type': 'datetime', 'required': True},
-        'endingDate': {'type': 'datetime', 'required': True},
-        'startingTime': {'type': 'datetime', 'required': True},
-        'endingTime': {'type': 'datetime', 'required': True},
+        'startingDateTime': {'type': 'datetime', 'required': True},
+        'endingDateTime': {'type': 'datetime', 'required': True},
         'item': {'type': 'string', 'required': True, 'maxlength': 255},
         'spendingAmount': {'type': 'integer', 'required': True},
         'incomeAmount': {'type': 'integer', 'required': True}
     }
     v = Validator(schema)
     return v.validate(params), v.errors  # type: ignore
+
+
+def is_valid_parametor(params) -> Tuple[bool, str]:
+    """有効なパラメータかどうかを判定する
+
+    Returns:
+        bool: 有効なパラメータであるか
+        str: 失敗した場合、エラーメッセージを返す
+    """
+    message = ''
+
+    for name in params:
+        if convert_to_snake(name) not in Schedule.get_param_name():
+            message = f'invalid parameter: {name}'
+
+    return True if message == '' else False, message
 
 
 def create_table():
