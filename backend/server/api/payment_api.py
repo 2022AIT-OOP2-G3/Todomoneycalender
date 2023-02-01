@@ -5,18 +5,19 @@ import db.payment_db as payment_db
 import model.payment_model as payment_model
 from flask import Blueprint, jsonify, request
 from utility.is_date_convertible import is_date_convertible
+from utility.auth import valify_token
 
 payment_module = Blueprint('payment', __name__, url_prefix='/payment')
 
 
 @payment_module.route('/', methods=['POST'])
+@valify_token
 def post_payment():
     """支出を追加する
 
     Returns:
         str: ステータス
     """
-
     if not request.is_json:
         return jsonify({'status': 'NG', 'message': "deta is not json"})
     json: dict = cast(dict, request.get_json())
@@ -48,6 +49,7 @@ def post_payment():
 
 
 @ payment_module.route('/<string:uid>/<int:year>/<int:month>', methods=['GET'])
+@valify_token
 def get_monthly_payments(uid: str, year: int, month: int):
     """指定した月の支出を取得する
 
