@@ -44,7 +44,7 @@ def validate(params) -> Tuple[bool, dict]:
         'spendingAmount': {'type': 'integer', 'required': True},
         'date': {'type': 'datetime', 'required': True}
     }
-    v = Validator(schema)
+    v = Validator(schema, allow_unknown=True)
     return v.validate(params), v.errors  # type: ignore
 
 

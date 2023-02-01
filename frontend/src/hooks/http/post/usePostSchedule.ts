@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import axios from "axios";
 
-import { auth } from "../../firebase/firebase"; 
+import { auth } from "../../firebase/firebase";
 import { PostSchedule } from "../../../../types/http/post/postSchedule";
 
 interface Props {
@@ -28,18 +28,22 @@ export const usePostSchedule = () => {
       alert("登録に失敗しました");
       return;
     }
+    const userToken = localStorage.getItem('token');
 
-    axios
-      .post<PostSchedule>("http://127.0.0.1:5000/schedule/", {
-        uid: uid,
-        startingDateTime,
-        endingDateTime,
-        item: item,
-        spendingAmount: spendingAmount,
-        incomeAmount: incomeAmount,
-      })
-      .then(() => alert("登録完了しました"))
-      .catch(() => alert("登録に失敗しました"));
+    if (userToken) {
+      axios
+        .post<PostSchedule>("http://127.0.0.1:5000/schedule/", {
+          uid: uid,
+          startingDateTime,
+          endingDateTime,
+          item: item,
+          spendingAmount: spendingAmount,
+          incomeAmount: incomeAmount,
+          headers: { Authorization: "JWT " + userToken }
+        })
+        .then(() => alert("登録完了しました"))
+        .catch(() => alert("登録に失敗しました"));
+    }
   }, []);
   return { postScheduleData };
 };

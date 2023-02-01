@@ -75,15 +75,14 @@ class Schedule(Base):
         Returns:
             Schedule: 生成したデータ
         """
+        object_params = {}
         for name in cls.get_param_name():
             json_name = convert_to_camel(name)
             if json_name not in params:
-                params[name] = None
+                object_params[name] = None
             else:
-                value = params[json_name]
-                del params[json_name]
-                params[name] = value
-        return cls(**params)
+                object_params[name] = params[json_name]
+        return cls(**object_params)
 
 
 def validate(params: Dict) -> Tuple[bool, dict]:
@@ -101,7 +100,8 @@ def validate(params: Dict) -> Tuple[bool, dict]:
         'spendingAmount': {'type': 'integer', 'required': True},
         'incomeAmount': {'type': 'integer', 'required': True}
     }
-    v = Validator(schema)
+    # 他のパラメータがあった場合でもエラーにならないようにする
+    v = Validator(schema, allow_unknown=True)
     return v.validate(params), v.errors  # type: ignore
 
 
