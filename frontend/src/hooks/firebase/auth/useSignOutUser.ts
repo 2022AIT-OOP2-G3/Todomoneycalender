@@ -10,6 +10,7 @@ export const useSignOutUser = () => {
         const result = window.confirm("サインアウトしますか？");
         if (!result) {
             console.log("signOut cancel");
+            localStorage.removeItem('token');
             return;
         }
         signOut(auth)

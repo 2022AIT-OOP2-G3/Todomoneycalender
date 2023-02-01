@@ -2,6 +2,7 @@ import { useCallback, } from "react";
 import { signInWithEmailAndPassword, } from "firebase/auth"
 import { auth, } from "../firebase"
 import { useNavigate, } from "react-router-dom";
+import { getToken } from "./getUserToken";
 
 interface Props {
   email: string;
@@ -17,6 +18,7 @@ export const useSignInUser = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((user) => {
         console.log('ログイン成功=', user.user.uid)
+        getToken();
         navigate('/' + user.user.uid + '/calender')
       })
       .catch((error) => {
