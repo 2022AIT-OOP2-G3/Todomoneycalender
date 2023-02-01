@@ -17,6 +17,7 @@ pytest = "*"
 isort = "*"
 cerberus = "*"
 flask-cors = "*"
+firebase-admin = "*"
 
 [dev-packages]
 autopep8 = "*"

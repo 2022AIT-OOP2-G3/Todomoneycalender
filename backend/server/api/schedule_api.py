@@ -1,28 +1,28 @@
+from utility.auth import valify_token
 import datetime as t
 from typing import cast
 
-from flask import Blueprint, jsonify, request
-
-from settings import date_time_format, manth_format
-import db.schedule_db as schedule_db
 import db.payment_db as payment_db
+import db.schedule_db as schedule_db
 import model.schedule_model as schedule_model
-from utility.is_date_convertible import (
-    is_date_time_convertible, is_date_convertible, is_manth_convertible)
-
+from flask import Blueprint, jsonify, request
+from settings import date_time_format, manth_format
 from utility.convert_json_key import convert_to_camel
+from utility.is_date_convertible import (is_date_convertible,
+                                         is_date_time_convertible,
+                                         is_manth_convertible)
 
 schedule_module = Blueprint('schedule', __name__, url_prefix='/schedule')
 
 
 @schedule_module.route('/', methods=['POST'])
+@valify_token
 def post_schedule():
     """スケジュールを追加する
 
     Returns:
         str: ステータス
     """
-
     if not request.is_json:
         return jsonify({'status': 'NG', 'message': "data is not json"})
     json: dict = cast(dict, request.get_json())
@@ -52,6 +52,7 @@ def post_schedule():
 
 
 @ schedule_module.route('/<string:uid>/<int:year>/<int:month>', methods=['GET'])
+@valify_token
 def get_monthly_schedules(uid: str, year: int, month: int):
     """指定した月のスケジュールを取得する
 
@@ -95,6 +96,7 @@ def get_monthly_schedules(uid: str, year: int, month: int):
 
 
 @ schedule_module.route('/<string:uid>/<int:year>/<int:month>/<int:day>', methods=['GET'])
+@valify_token
 def get_daily_schedules(uid: str, year: int, month: int, day: int):
     """指定した日のスケジュールを取得する
 
@@ -125,6 +127,7 @@ def get_daily_schedules(uid: str, year: int, month: int, day: int):
 
 
 @ schedule_module.route('/<int:id>', methods=['DELETE'])
+@valify_token
 def delete_schedule(id: int):
     """指定した日のスケジュールを削除する
 
@@ -137,6 +140,7 @@ def delete_schedule(id: int):
 
 
 @ schedule_module.route('/', methods=['PUT'])
+@valify_token
 def change_schedule():
     """指定したスケジュールを変更する
     """

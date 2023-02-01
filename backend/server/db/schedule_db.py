@@ -20,8 +20,10 @@ def get_monthly_schedules(uid: str, month: t.datetime) -> List[Schedule]:
     session = get_db_session()
     schedules = session.query(Schedule).filter(
         Schedule.uid == uid,
-        func.date_format(Schedule.starting_date_time,
-                         '%Y-%m') == month.strftime('%Y-%m')
+        func.date_format(
+            Schedule.starting_date_time, '%Y-%m') <= month.strftime('%Y-%m'),
+        func.date_format(
+            Schedule.ending_date_time, '%Y-%m') >= month.strftime('%Y-%m')
     ).all()
     session.close()
     return schedules
@@ -41,7 +43,9 @@ def get_daily_schedules(uid: str, date: t.datetime) -> List[Schedule]:
     schedules = session.query(Schedule).filter(
         Schedule.uid == uid,
         func.date_format(
-            Schedule.starting_date_time, '%Y-%m-%d') == date.strftime('%Y-%m-%d')
+            Schedule.starting_date_time, '%Y-%m-%d') <= date.strftime('%Y-%m-%d'),
+        func.date_format(
+            Schedule.ending_date_time, '%Y-%m-%d') >= date.strftime('%Y-%m-%d')
     ).all()
     session.close()
     return schedules
