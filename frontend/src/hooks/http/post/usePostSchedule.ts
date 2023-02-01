@@ -31,7 +31,6 @@ export const usePostSchedule = () => {
     const userToken = localStorage.getItem('token');
 
     if (userToken) {
-      console.log("トークンを取得");
       axios
         .post<PostSchedule>("http://127.0.0.1:5000/schedule/", {
           uid: uid,
