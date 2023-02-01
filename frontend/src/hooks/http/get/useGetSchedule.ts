@@ -3,7 +3,6 @@ import axios from "axios";
 
 import { auth } from "../../firebase/firebase";
 import { GetSchedule } from "../../../../types/http/get/getShudele";
-import { tokenToString } from "typescript";
 
 interface Props {
   year: string;
