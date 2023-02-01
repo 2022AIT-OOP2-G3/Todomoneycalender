@@ -28,26 +28,23 @@ export const usePostSchedule = () => {
       alert("登録に失敗しました");
       return;
     }
+    const userToken = localStorage.getItem('token');
 
-    auth.currentUser?.getIdToken()
-      .then(userToken => {
-        console.log("トークンを取得");
-        axios
-          .post<PostSchedule>("http://127.0.0.1:5000/schedule/", {
-            uid: uid,
-            startingDateTime,
-            endingDateTime,
-            item: item,
-            spendingAmount: spendingAmount,
-            incomeAmount: incomeAmount,
-            headers: { Authorization: "JWT " + userToken }
-          })
-          .then(() => alert("登録完了しました"))
-          .catch(() => alert("登録に失敗しました"));
-      })
-      .catch(e => {
-        console.log(e);
-      })
+    if (userToken) {
+      console.log("トークンを取得");
+      axios
+        .post<PostSchedule>("http://127.0.0.1:5000/schedule/", {
+          uid: uid,
+          startingDateTime,
+          endingDateTime,
+          item: item,
+          spendingAmount: spendingAmount,
+          incomeAmount: incomeAmount,
+          headers: { Authorization: "JWT " + userToken }
+        })
+        .then(() => alert("登録完了しました"))
+        .catch(() => alert("登録に失敗しました"));
+    }
   }, []);
   return { postScheduleData };
 };

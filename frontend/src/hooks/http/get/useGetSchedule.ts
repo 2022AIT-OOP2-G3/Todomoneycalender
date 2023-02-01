@@ -15,15 +15,8 @@ export const useGetSchedule = () => {
   const getSchedules = useCallback(async (props: Props) => {
     const { year, month } = props;
     const uid = auth.currentUser?.uid;
-
-    auth.currentUser?.getIdToken()
-      .then(token => {
-        localStorage.setItem('token', token)
-      })
-      .catch(e => {
-        console.log(e)
-      })
     const userToken = localStorage.getItem('token');
+
     if (userToken) {
       try {
         const response = await axios.get<GetSchedule>(`http://127.0.0.1:5000/schedule/${uid}/${year}/${month}`, { headers: { Authorization: "JWT " + userToken } })
