@@ -15,7 +15,7 @@ export const useGetSchedule = () => {
   const getSchedules = useCallback(async (props: Props) => {
     const { year, month } = props;
     const uid = auth.currentUser?.uid;
-    const userToken = localStorage.getItem('token');
+    const userToken = sessionStorage.getItem('token');
 
     if (userToken) {
       try {
